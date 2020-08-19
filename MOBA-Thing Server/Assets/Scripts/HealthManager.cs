@@ -1,6 +1,6 @@
 ﻿public enum Damage_Type { Flat, PMax, PMiss, PCurrent }
 
-public class Health
+public class HealthManager
 {
     public float Max { get; private set; }
     public float Current { get; private set; }
@@ -11,14 +11,14 @@ public class Health
     public static AffectHealthHandler OnPostAffectHealth;
 
     private int EntityID { get; }
-    private float HpPerLvl { get; }
+    private float HPPerLvl { get; }
 
-    public Health(int _entityID, float _baseHP, float _hpPerLvl)
+    public HealthManager(int _entityID, float _baseHP, float _hpPerLvl)
     {
         EntityID = _entityID;
 
         Current = Max = _baseHP;
-        HpPerLvl = _hpPerLvl;
+        HPPerLvl = _hpPerLvl;
         Invincible = false;
     }
 
@@ -57,7 +57,7 @@ public class Health
 
     public void Levelup(int _level)
     {
-        Max += HpPerLvl * _level;
+        Max += HPPerLvl * _level;
     }
 
     /// <summary>Gets percentage of max HP</summary>

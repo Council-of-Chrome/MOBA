@@ -1,8 +1,11 @@
 ﻿
+using System;
+
 public enum Team_Type { Red, Blue, Neutral }
 public enum Range_Class { Melee, Ranged }
 
-public interface ITargetable
+//used for right click interactions in the game world
+public interface IEntityTargetable
 {
     int EntityID { get; }
 }
@@ -15,6 +18,7 @@ public interface IHasName
 public interface ICanLevel
 {
     int BaseLevel { get; }
+    Func<int, int> MaxXPScaler { get; }
 }
 
 public interface IMove
@@ -22,7 +26,7 @@ public interface IMove
     float MoveSpeed { get; }
 }
 
-public interface ITakeDamage : ICanLevel
+public interface IUseHealth
 {
     float BaseHP { get; }
     float HPPerLevel { get; }

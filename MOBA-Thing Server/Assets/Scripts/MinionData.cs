@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
-public class Minion : ScriptableObject, ITakeDamage, IAutoAttack, IMove, IHasName //TODO: Build entity factory for preparing monobehaviours
+[CreateAssetMenu(fileName = "New Minion", menuName = "Entities/Minions/Minion")]
+public class MinionData : ScriptableObject, IUseHealth, IAutoAttack, IMove, IHasName //TODO: Build entity factory for preparing monobehaviours
 {
     public string DisplayName { get; }
 
@@ -19,4 +21,7 @@ public class Minion : ScriptableObject, ITakeDamage, IAutoAttack, IMove, IHasNam
 
     public float AttackRange { get; }
     public Range_Class RangeClass { get; }
+
+    public Func<int, int> MaxXPScaler { get; } = (nxtlvl) 
+        => { return (int)(200 * Mathf.Pow(nxtlvl, 2)); };
 }
