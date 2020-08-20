@@ -1,5 +1,6 @@
 ﻿public enum Damage_Type { Flat, PMax, PMiss, PCurrent }
 
+//plug these into monobehaviour controller classes to isolate work
 public class HealthManager
 {
     public float Max { get; private set; }

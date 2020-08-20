@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//plug these into monobehaviour controller classes to isolate work
 public class ExperienceManager
 {
     public int Level { get; private set; }
