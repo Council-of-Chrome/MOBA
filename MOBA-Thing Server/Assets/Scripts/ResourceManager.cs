@@ -30,18 +30,17 @@ public class ResourceManager
     /// <returns>Current resource after modification</returns>
     public virtual float Modify(ResourceEffector _data)
     {
-        if(Shield > _data.Value)
+        float value = _data.Value;
+
+        if (Shield > _data.Value)
         {
-            Shield -= _data.Value;
+            Shield -= value;
             return Current;
         }
-        else
-        {
-            _data.Value -= Shield;
-            Shield = 0f;
-        }
 
-        float value = _data.Value;
+        value -= Shield;
+        Shield = 0f;
+
         if (OnPreAffectResource != null)
             value = OnPreAffectResource.Invoke(EntityID, _data.Value);
 
@@ -66,7 +65,7 @@ public class ResourceManager
                 break;
         }
 
-        OnPostAffectResource?.Invoke(EntityID, temp - Current);
+        OnPostAffectResource?.Invoke(EntityID, Current);
         return Current;
     }
 

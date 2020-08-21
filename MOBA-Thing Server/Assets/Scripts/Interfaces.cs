@@ -56,4 +56,8 @@ public interface IConsumeResource
     float ResourceRegenPerLevel { get; }
 }
 
-
+/*public interface ICastAbility
+ * {
+ *  AbilityData[] Abilities { get; }
+ * }
+ */
