@@ -11,15 +11,18 @@ public class MinionData : ScriptableObject, IUseHealth, IAutoAttack, IMove, IHas
     public float BaseHP { get; }
     public float HPPerLevel { get; }
 
+    public float BaseHPRegen { get; }
+    public float HPRegenPerLevel { get; }
+
     public float MoveSpeed { get; }
 
-    public float AttackDamage { get; }
+    public float BaseAttackDamage { get; }
     public float AttackPerLevel { get; }
 
-    public float AttackSpeed { get; }
+    public float BaseAttackSpeed { get; }
     public float AttackSpeedPerLevel { get; }
 
-    public float AttackRange { get; }
+    public float BaseAttackRange { get; }
     public Range_Class RangeClass { get; }
 
     public Func<int, int> MaxXPScaler { get; } = (nxtlvl) 

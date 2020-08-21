@@ -30,18 +30,30 @@ public interface IUseHealth
 {
     float BaseHP { get; }
     float HPPerLevel { get; }
+
+    float BaseHPRegen { get; }
+    float HPRegenPerLevel { get; }
 }
 
-public interface IAutoAttack : ICanLevel
+public interface IAutoAttack
 {
-    float AttackDamage { get; }
+    float BaseAttackDamage { get; }
     float AttackPerLevel { get; }
 
-    float AttackSpeed { get; }
+    float BaseAttackSpeed { get; }
     float AttackSpeedPerLevel { get; }
 
-    float AttackRange { get; }
+    float BaseAttackRange { get; }
     Range_Class RangeClass { get; }
+}
+
+public interface IConsumeResource
+{
+    float BaseResource { get; }
+    float ResourcePerLevel { get; }
+
+    float BaseResourceRegen { get; }
+    float ResourceRegenPerLevel { get; }
 }
 
 

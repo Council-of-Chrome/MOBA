@@ -39,16 +39,23 @@ public class ExperienceManager
         if (_entityID != EntityID)
             return;
 
+        if (Level >= 21)
+        {
+            Level = 21;
+            return;
+        }
+
         TestLevelRecursive(
             Mathf.Clamp(CurrentExperience + _xpValue, 0, MaxExperience)
             );
     }
-    //levelup,  passing remainder into next level and test again
+    //levelup, passing remainder into next level and test again
     private void TestLevelRecursive(int _xpValue)
     {
         if (_xpValue >= MaxExperience)
         {
             Level = Mathf.Clamp(Level++, 0, 21);
+            //TODO: prolly wanna do some kind of levelup callback
             ExperienceScaler(Level);
             CurrentExperience = (CurrentExperience + _xpValue) - MaxExperience;
             TestLevelRecursive(CurrentExperience);

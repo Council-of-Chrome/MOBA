@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public struct HealthEffector
+public struct ResourceEffector
 {
     public float Value;
-    public Damage_Type Type;
+    public Stat_Effector_Type Type;
 }
