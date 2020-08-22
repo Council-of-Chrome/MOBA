@@ -17,7 +17,7 @@ public class ChampionData : ScriptableObject, IHasName, ICanLevel, IMove, IUseHe
     [Space]
     [SerializeField]
     private float moveSpeed = default;
-    public float MoveSpeed { get { return moveSpeed; } }
+    public float BaseMoveSpeed { get { return moveSpeed; } }
     [Space]
     [SerializeField]
     private float baseHP = default;

@@ -16,7 +16,7 @@ public class MinionData : ScriptableObject, IUseHealth, IAutoAttack, IMove, IHas
     [Space]
     [SerializeField]
     private float moveSpeed = default;
-    public float MoveSpeed { get { return moveSpeed; } }
+    public float BaseMoveSpeed { get { return moveSpeed; } }
     [Space]
     [SerializeField]
     private float baseHP = default;

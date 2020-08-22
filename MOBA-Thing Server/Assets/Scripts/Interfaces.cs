@@ -23,7 +23,7 @@ public interface ICanLevel
 
 public interface IMove
 {
-    float MoveSpeed { get; }
+    float BaseMoveSpeed { get; }
 }
 
 public interface IUseHealth
