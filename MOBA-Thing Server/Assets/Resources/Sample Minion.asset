@@ -12,16 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1cc59d598d796447852b8a4243a452e, type: 3}
   m_Name: Sample Minion
   m_EditorClassIdentifier: 
-  displayName: 
+  displayName: Sample Minion
   baseLevel: 1
-  moveSpeed: 0
-  baseHP: 0
-  hpPerLevel: 0
+  moveSpeed: 5
+  baseHP: 477
+  hpPerLevel: 41
   baseHPRegen: 0
   hpRegenPerLevel: 0
-  baseAttackDamage: 0
-  attackPerLevel: 0
-  baseAttackSpeed: 0
+  baseAttackDamage: 12
+  attackPerLevel: 3.4
+  baseAttackSpeed: 1.25
   attackSpeedPerLevel: 0
-  baseAttackRange: 0
+  baseAttackRange: 2
   rangeClass: 0

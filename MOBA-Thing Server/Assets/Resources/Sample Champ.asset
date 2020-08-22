@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73d871f6ef927b046a5778877ea47cdb, type: 3}
   m_Name: Sample Champ
   m_EditorClassIdentifier: 
-  displayName: Sample
+  displayName: Sample Champion
   baseLevel: 1
   moveSpeed: 5
   baseHP: 590

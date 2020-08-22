@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
         }
         Instance = this;
     }
-    #endregion  
+    #endregion   //may not actually need this
 
     //public GameTeam BlueTeam;
     //public GameTeam RedTeam;
