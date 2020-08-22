@@ -56,8 +56,16 @@ public interface IConsumeResource
     float ResourceRegenPerLevel { get; }
 }
 
-/*public interface ICastAbility
- * {
- *  AbilityData[] Abilities { get; }
- * }
- */
+public interface IUseAbilities
+{ 
+    Ability[] Abilities { get; }
+}
+
+public interface IAbilityCastable
+{
+    void Cast();
+}
+public interface IAbilityPassive
+{
+    void Init();
+}

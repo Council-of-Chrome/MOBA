@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Champion", menuName = "Entities/Champion")]
-public class ChampionData : ScriptableObject, IHasName, ICanLevel, IMove, IUseHealth, IAutoAttack, IConsumeResource/*, ICastAbility*/
+public class ChampionData : ScriptableObject, IHasName, ICanLevel, IMove, IUseHealth, IAutoAttack, IConsumeResource//, IUseAbilities
 {
     [SerializeField]
     private string displayName = default;
@@ -67,4 +67,8 @@ public class ChampionData : ScriptableObject, IHasName, ICanLevel, IMove, IUseHe
     [SerializeField]
     private float resourceRegenPerLevel = default;
     public float ResourceRegenPerLevel { get { return resourceRegenPerLevel; } }
+    [Space]
+    [SerializeField]
+    private Ability[] abilities = new Ability[4];
+    public Ability[] Abilities { get { return abilities; } }
 }
