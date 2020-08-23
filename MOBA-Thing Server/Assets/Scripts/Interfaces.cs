@@ -61,11 +61,3 @@ public interface IUseAbilities
     Ability[] Abilities { get; }
 }
 
-public interface IAbilityCastable
-{
-    void Cast();
-}
-public interface IAbilityPassive
-{
-    void Init();
-}

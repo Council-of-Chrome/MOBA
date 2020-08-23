@@ -1,6 +1,4 @@
-﻿
-
-using UnityEngine;
+﻿public enum Stat_Effector_Type { Flat, PMax, PMiss, PCurrent }
 
 public class ResourceManager
 {
@@ -10,8 +8,8 @@ public class ResourceManager
     public bool Invincible { get; set; }
 
     public delegate float AffectResourceHandler(int _entityID, float _val); //<-- TODO: make more verbose than just 'id', contain team etc
-    public static AffectResourceHandler OnPreAffectResource;
-    public static AffectResourceHandler OnPostAffectResource;
+    public AffectResourceHandler OnPreAffectResource;
+    public AffectResourceHandler OnPostAffectResource;
 
     private int EntityID { get; }
     private float ResourcePerLvl { get; }
@@ -71,7 +69,7 @@ public class ResourceManager
 
     public virtual void Levelup(int _level)
     {
-        Max += ResourcePerLvl * _level;
+        Max = ResourcePerLvl * _level;
     }
 
     /// <summary>Gets percentage of max resource</summary>

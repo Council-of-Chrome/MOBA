@@ -1,6 +1,4 @@
-﻿public enum Stat_Effector_Type { Flat, PMax, PMiss, PCurrent }
-
-//plug these into monobehaviour controller classes to isolate work
+﻿//plug these into monobehaviour controller classes to isolate work
 public class HealthManager : ResourceManager
 {
     public HealthManager(int _entityID, float _baseHP, float _hpPerLvl) 

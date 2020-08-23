@@ -12,16 +12,18 @@ public class ExperienceManager
     public int CurrentExperience { get; private set; }
 
     public delegate void ExperienceHandler(int _entityID, int _value); //<-- TODO: make more verbose than just 'id', contain team etc
-    public static ExperienceHandler OnChangeExperience; //invoke this delegate to modify experience from some system event
+    public ExperienceHandler OnChangeExperience; //invoke this delegate to modify experience from some system event
+    public delegate void LevelUpHandler(int _newLevel);
+    public LevelUpHandler OnLevelUp;
 
     private int EntityID { get; }
     private Func<int, int> ExperienceScaler { get; }
 
-    public ExperienceManager(int _entityID, int _baseXP, Func<int, int> _xpScaler)
+    public ExperienceManager(int _entityID, int _baseLevel, Func<int, int> _xpScaler)
     {
         EntityID = _entityID;
 
-        MaxExperience = _baseXP;
+        MaxExperience = _xpScaler(_baseLevel);
         CurrentExperience = 0;
 
         ExperienceScaler = _xpScaler;
@@ -55,7 +57,7 @@ public class ExperienceManager
         if (_xpValue >= MaxExperience)
         {
             Level = Mathf.Clamp(Level++, 0, 21);
-            //TODO: prolly wanna do some kind of levelup callback
+            OnLevelUp?.Invoke(Level);
             ExperienceScaler(Level);
             CurrentExperience = (CurrentExperience + _xpValue) - MaxExperience;
             TestLevelRecursive(CurrentExperience);
