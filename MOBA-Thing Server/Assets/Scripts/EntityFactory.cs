@@ -26,7 +26,7 @@ public class EntityFactory : MonoBehaviour
     public MinionController SpawnMinion(MinionData _data, Team_Type _team)
     {
         GameObject go = Instantiate(MinionPrefab, Vector3.zero, Quaternion.identity);
-        go.name = $"Minion |{_data.DisplayName}|{entityCounter}";
+        go.name = $"Minion |{_data.DisplayName}| ID |{entityCounter}|";
 
         MinionController mc = go.GetComponent<MinionController>();
         mc.Initialize(entityCounter, _data);
