@@ -13,7 +13,8 @@ public class ChampionData : ScriptableObject, IHasName, ICanLevel, IMove, IUseHe
     [SerializeField]
     private int baseLevel = 1;
     public int BaseLevel { get { return baseLevel; } }
-    public Func<int, int> MaxXPScaler { get; }
+    public Func<int, int> MaxXPScaler { get; } = (nxtlvl)
+        => { return (int)(200 * Mathf.Pow(nxtlvl, 2)); };
     [Space]
     [SerializeField]
     private float moveSpeed = default;
