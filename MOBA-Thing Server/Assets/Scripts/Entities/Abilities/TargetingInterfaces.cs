@@ -1,14 +1,5 @@
-﻿using UnityEngine;
-
-public interface IAbilityCastable
-{
-    float CooldownDuration { get; }
-    void Trigger();
-}
-public interface IAbilityPassive
-{
-    void Init();
-}
+﻿using System.Collections;
+using UnityEngine;
 
 public interface ITargetSelf
 {

@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
-public class ChampionController : MonoBehaviour, IEntityTargetable, IManageHealth, IManageResource, IManageAD, IManageEXP, IManageNavAgent
+public class ChampionController : MonoBehaviour, IEntityTargetable, IManageHealth, IManageResource, IManageAD, IManageEXP, IManageNavAgent, IManageAbilities
 {
     public int EntityID { get; private set; }
 
@@ -36,6 +34,19 @@ public class ChampionController : MonoBehaviour, IEntityTargetable, IManageHealt
     ~ChampionController() //safety destructor
     {
         Experience.OnLevelUp -= Levelup;
+    }
+
+    public void CastAbility(bool[] _inputs, Vector3 _targetPos)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            if (_inputs[i])
+            {
+                if (data.Abilities[i] is IAbilityCastable ability)
+                    ability.Trigger(EntityID, _targetPos);
+                return;
+            }
+        }
     }
 
     public void Levelup(int _newLevel)

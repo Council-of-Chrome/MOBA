@@ -1,10 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public MinionData test; //modify this between champion and minion data for testing
+    public ChampionData test; //modify this between champion and minion data for testing
 
     #region Singleton
     public static GameManager Instance;
@@ -23,9 +23,6 @@ public class GameManager : MonoBehaviour
             [Team_Type.Red] = new Dictionary<int, IEntityTargetable>(),
             [Team_Type.Neutral] = new Dictionary<int, IEntityTargetable>()
         };
-
-        int id = EntityFactory.Instance.SpawnMinion(test, Team_Type.Blue).EntityID; //use this for spawning and other move commands
-        (Entities[Team_Type.Blue][id] as IManageNavAgent).MoveTo(new Vector3(5f, 0f, 5f));
     }
     #endregion   //may not actually need this
 
@@ -46,13 +43,30 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public static IEntityTargetable GetEntity(int _entityID)
+    {
+        if (Entities[Team_Type.Blue].ContainsKey(_entityID))
+            return Entities[Team_Type.Blue][_entityID];
+        if (Entities[Team_Type.Neutral].ContainsKey(_entityID))
+            return Entities[Team_Type.Blue][_entityID];
+        if (Entities[Team_Type.Red].ContainsKey(_entityID))
+            return Entities[Team_Type.Blue][_entityID];
+        throw new System.Exception("Entity not registered.");
+    }
+
+    private void Start()
+    {
+        int id = EntityFactory.Instance.SpawnChampion(test, Team_Type.Blue).EntityID; //use this for spawning and other move commands
+        //(Entities[Team_Type.Blue][id] as IManageNavAgent).MoveTo(new Vector3(5f, 0f, 5f));
+    }
+
     // Update is called once per frame
     void Update()
     {
         //do shit here probably
 
+        MainThread.Update();
         MatchTimeMilliseconds += Time.unscaledDeltaTime;
-
         /*
         currentTime += Time.unscaledDeltaTime;
         if(currentTime >= 1f)

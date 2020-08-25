@@ -24,3 +24,7 @@ public interface IManageNavAgent
     Vector3 GetPosition();
     void MoveTo(Vector3 _target);
 }
+public interface IManageAbilities
+{
+    void CastAbility(bool[] _inputs, Vector3 _targetPos);
+}

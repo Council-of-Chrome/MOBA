@@ -1,7 +1,6 @@
-﻿
-using System;
+﻿using System;
 
-public enum Team_Type { Red, Blue, Neutral }
+public enum Team_Type { Blue, Neutral, Red }
 public enum Range_Class { Melee, Ranged }
 
 //used for right click interactions in the game world
