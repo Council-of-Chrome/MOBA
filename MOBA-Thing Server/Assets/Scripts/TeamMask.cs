@@ -24,6 +24,35 @@ public struct TeamMask
         };
     }
 
+    public static TeamMask MaskToIgnoreAllies(Team_Type _allyTeam)
+    {
+        byte mask = 0b_000;
+
+        if (!(_allyTeam == Team_Type.Blue))
+            mask += blue;
+        if (!(_allyTeam == Team_Type.Neutral))
+            mask += neutral;
+        if (!(_allyTeam == Team_Type.Red))
+            mask += red;
+        return new TeamMask((mask & (1 << 0)) != 0, (mask & (1 << 1)) != 0, (mask & (1 << 2)) != 0);
+    }
+    public static TeamMask MaskToAlliesOnly(Team_Type _allyTeam)
+    {
+        byte mask = 0b_000;
+
+        if (_allyTeam == Team_Type.Blue)
+            mask += blue;
+        if (_allyTeam == Team_Type.Neutral)
+            mask += neutral;
+        if (_allyTeam == Team_Type.Red)
+            mask += red;
+        return new TeamMask((mask & (1 << 0)) != 0, (mask & (1 << 1)) != 0, (mask & (1 << 2)) != 0);
+    }
+    public static TeamMask MaskToHitAll()
+    {
+        return new TeamMask(true, true, true);
+    }
+
     public TeamMask(bool _allowBlue, bool _allowNeutral, bool _allowRed)
     {
         mask = 0b_000;
@@ -38,6 +67,6 @@ public struct TeamMask
 
     public override string ToString()
     {
-        return $"{((mask & (1 << 0)) != 0)}, {((mask & (1 << 1)) != 0)}, {((mask & (1 << 2)) != 0)}";
+        return $"{(mask & (1 << 0)) != 0}, {(mask & (1 << 1)) != 0}, {(mask & (1 << 2)) != 0}";
     }
 }

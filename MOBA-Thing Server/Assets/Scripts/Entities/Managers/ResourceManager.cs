@@ -1,4 +1,6 @@
-﻿public enum Stat_Effector_Type { Flat, PMax, PMiss, PCurrent }
+﻿using UnityEngine;
+
+public enum Stat_Effector_Type { Flat, PMax, PMiss, PCurrent }
 
 public class ResourceManager
 {
@@ -30,13 +32,13 @@ public class ResourceManager
     {
         float value = _data.Value;
 
-        if (Shield > _data.Value)
+        if (Shield > Mathf.Abs(_data.Value) && Mathf.Sign(_data.Value) == -1)
         {
-            Shield -= value;
+            Shield -= value; //FIXME: can't do this with anything but flat
             return Current;
         }
 
-        value -= Shield;
+        value -= Shield; //FIXME: or this
         Shield = 0f;
 
         if (OnPreAffectResource != null)
