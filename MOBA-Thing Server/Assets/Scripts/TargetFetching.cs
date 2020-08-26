@@ -11,7 +11,8 @@ public static class TargetFetching
 
         foreach (KeyValuePair<Team_Type, bool> team in _mask.Get())
         {
-            if(team.Value)
+            if (team.Value)
+            {
                 foreach (IEntityTargetable target in GameManager.Entities[team.Key].Values)
                 {
                     if (target is IManageNavAgent)
@@ -19,13 +20,12 @@ public static class TargetFetching
                         Vector3 targetPos = (target as IManageNavAgent).GetPosition();
                         Vector3 distance = (_pos - targetPos).normalized;
 
-                        if (Vector3.Dot(distance, _forward.normalized) > (1 - (_angle * (1 / 360) * 2)))
-                        {
-                            //within sector
-                            hits.Add(target);
-                        }
+                        if(distance.sqrMagnitude <= Mathf.Pow(_radius, 2f))
+                            if (Vector3.Dot(_forward.normalized, distance) <= _angle * (1f / 360f) * 2f) //within sector
+                                hits.Add(target);
                     }
                 }
+            }
         }
         return hits.ToArray();
     }

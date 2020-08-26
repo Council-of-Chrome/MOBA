@@ -10,19 +10,18 @@ public class SampleAbility1 : Ability, IAbilityCastable, ITargetAOE, IAffectHeal
     public float[] CooldownPerLevel { get; }
     public float[] CostPerLevel { get; }
 
-    public TeamMask Mask { get; }
+    public TeamMask Mask { get; } = new TeamMask(true, true, true);
 
-    public float Radius { get; }
-    public int Angle { get; }
+    [SerializeField]
+    private float radius = 5;
+    public float Radius { get { return radius; } }
+    public int Angle { get; } = 90;
 
     public ResourceEffector HealthEffector { get; }
 
-
-    public IEnumerator Trigger(int _casterID, Vector3 _targetPos)
+    public void Trigger(int _casterID, Vector3 _targetPos)
     {
         //start animation or smth
-        yield return new WaitForSecondsRealtime(0.75f);
-
         IManageNavAgent self = GameManager.GetEntity(_casterID) as IManageNavAgent;
 
         Vector3 forwardVec = (_targetPos - self.GetPosition()).normalized;
@@ -30,9 +29,13 @@ public class SampleAbility1 : Ability, IAbilityCastable, ITargetAOE, IAffectHeal
 
         foreach (IEntityTargetable target in hits)
         {
+            if ((target as IManageHealth) == target)
+                Debug.Log("diff interfaces still true");
+
             if (target is IManageHealth)
+            {
                 (target as IManageHealth).Health.Modify(HealthEffector);
+            }
         }
-        yield return null;
     }
 }

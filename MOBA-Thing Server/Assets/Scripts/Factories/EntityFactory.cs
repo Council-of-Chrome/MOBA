@@ -21,9 +21,9 @@ public class EntityFactory : MonoBehaviour
 
     private static int entityCounter = 0;
 
-    public MinionController SpawnMinion(MinionData _data, Team_Type _team)
+    public MinionController SpawnMinion(MinionData _data, Team_Type _team, Vector3 _spawnPos)
     {
-        GameObject go = Instantiate(MinionPrefab, Vector3.zero, Quaternion.identity);
+        GameObject go = Instantiate(MinionPrefab, _spawnPos, Quaternion.identity);
         go.name = $"Minion |{_data.DisplayName}| ID |{entityCounter}|";
 
         MinionController mc = go.GetComponent<MinionController>();
@@ -36,10 +36,10 @@ public class EntityFactory : MonoBehaviour
         return mc;
     }
 
-    public ChampionController SpawnChampion(ChampionData _data, Team_Type _team)
+    public ChampionController SpawnChampion(ChampionData _data, Team_Type _team, Vector3 _spawnPos)
     {
         //TODO: rotate spawns around appropriate team fountain
-        GameObject go = Instantiate(ChampionPrefab, Vector3.zero, Quaternion.identity);
+        GameObject go = Instantiate(ChampionPrefab, _spawnPos, Quaternion.identity);
         go.name = $"Champion |{_data.DisplayName}|";
 
         ChampionController cc = go.GetComponent<ChampionController>();

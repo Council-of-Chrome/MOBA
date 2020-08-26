@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public ChampionData test; //modify this between champion and minion data for testing
+    //public ChampionData test1; //modify this between champion and minion data for testing
+    //public MinionData test2; //modify this between champion and minion data for testing
 
     #region Singleton
     public static GameManager Instance;
@@ -54,11 +55,13 @@ public class GameManager : MonoBehaviour
         throw new System.Exception("Entity not registered.");
     }
 
-    private void Start()
-    {
-        int id = EntityFactory.Instance.SpawnChampion(test, Team_Type.Blue).EntityID; //use this for spawning and other move commands
-        //(Entities[Team_Type.Blue][id] as IManageNavAgent).MoveTo(new Vector3(5f, 0f, 5f));
-    }
+    //private void Start() //uncomment to test stuff
+    //{
+    //    int idc = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Blue, Vector3.zero).EntityID; //use this for spawning and other move commands
+    //    EntityFactory.Instance.SpawnMinion(test2, Team_Type.Blue, Vector3.back * 3);
+    //    (Entities[Team_Type.Blue][idc] as IManageAbilities).CastAbility(new bool[4] { true, false, false, false }, Vector3.forward);
+    //    //(Entities[Team_Type.Blue][id] as IManageNavAgent).MoveTo(new Vector3(5f, 0f, 5f));
+    //}
 
     // Update is called once per frame
     void Update()

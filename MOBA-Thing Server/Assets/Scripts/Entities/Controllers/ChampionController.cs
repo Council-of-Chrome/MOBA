@@ -8,10 +8,10 @@ public class ChampionController : MonoBehaviour, IEntityTargetable, IManageHealt
     public HealthManager Health { get; private set; }
     public ResourceManager Resource { get; private set; }
     public ResourceManager AttackDamage { get; private set; }
+    public AbilityManager Abilities { get; private set; }
     public ExperienceManager Experience { get; private set; }
     public NavMeshAgent Agent { get; private set; }
 
-    private ChampionData data;
     private CapsuleCollider hitbox;
 
     public void Initialize(int _entityID, ChampionData _data)
@@ -21,6 +21,7 @@ public class ChampionController : MonoBehaviour, IEntityTargetable, IManageHealt
         Health = new HealthManager(EntityID, _data.BaseHP, _data.HPPerLevel);
         Resource = new ResourceManager(EntityID, _data.BaseResource, _data.ResourcePerLevel);
         AttackDamage = new ResourceManager(EntityID, _data.BaseAttackDamage, _data.AttackPerLevel);
+        Abilities = new AbilityManager(_entityID, _data.Abilities);
 
         Experience = new ExperienceManager(EntityID, _data.BaseLevel, _data.MaxXPScaler);
         Experience.OnLevelUp += Levelup;
@@ -40,10 +41,9 @@ public class ChampionController : MonoBehaviour, IEntityTargetable, IManageHealt
     {
         for (int i = 0; i < 4; i++)
         {
-            if (_inputs[i])
+            if (_inputs[i] && !Abilities.Casting)
             {
-                if (data.Abilities[i] is IAbilityCastable ability)
-                    ability.Trigger(EntityID, _targetPos);
+                Abilities.Trigger(i, _targetPos);
                 return;
             }
         }

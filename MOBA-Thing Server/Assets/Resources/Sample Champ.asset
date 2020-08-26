@@ -29,3 +29,8 @@ MonoBehaviour:
   resourcePerLevel: 25
   baseResourceRegen: 8
   resourceRegenPerLevel: 0.65
+  abilities:
+  - {fileID: 11400000, guid: a70eb6ccf3327ea43b5f5da1f80797cc, type: 2}
+  - {fileID: 11400000, guid: a70eb6ccf3327ea43b5f5da1f80797cc, type: 2}
+  - {fileID: 11400000, guid: a70eb6ccf3327ea43b5f5da1f80797cc, type: 2}
+  - {fileID: 11400000, guid: a70eb6ccf3327ea43b5f5da1f80797cc, type: 2}

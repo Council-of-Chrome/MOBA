@@ -34,7 +34,10 @@ public struct TeamMask
             mask += neutral;
         if (_allowRed)
             mask += red;
+    }
 
-        Debug.Log($"CurrentMask: {Convert.ToString(mask, 2)}");
+    public override string ToString()
+    {
+        return $"{((mask & (1 << 0)) != 0)}, {((mask & (1 << 1)) != 0)}, {((mask & (1 << 2)) != 0)}";
     }
 }

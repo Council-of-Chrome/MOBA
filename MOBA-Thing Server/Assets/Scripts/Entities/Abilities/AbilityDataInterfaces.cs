@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface IAbilityCastable : IAbilityCooldown, IAbilityCost
 {
-    IEnumerator Trigger(int _casterID, Vector3 _targetPos);
+    void Trigger(int _casterID, Vector3 _targetPos);
     TeamMask Mask { get; }
 }
 public interface IAbilityPassive
