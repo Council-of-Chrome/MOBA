@@ -81,10 +81,14 @@ public static class TargetFetching
                 }
         }
         return hits.ToArray();
+    }
+
+    public static IEntityTargetable FetchSingle(Ray _ray)
+    {
 
     }
 
-    public static bool PointInPoly(Vector2[] _poly, Vector3 _targetPos)
+    private static bool PointInPoly(Vector2[] _poly, Vector3 _targetPos)
     {
         Vector2 target = new Vector2(_targetPos.x, _targetPos.z);
 

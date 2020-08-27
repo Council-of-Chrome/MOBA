@@ -22,6 +22,7 @@ public class AbilityManager
 
     public void Trigger(int _index, Vector3 _pos)
     {
+        Casting = true;
         abilities[_index].Trigger(_pos);
     }
 }

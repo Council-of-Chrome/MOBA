@@ -4,6 +4,7 @@ using UnityEngine;
 
 public interface IAbilityCastable : IAbilityCooldown, IAbilityCost
 {
+    float CastTime { get; }
     void Trigger(int _casterID, Vector3 _targetPos);
     TeamMask Mask { get; }
 }
