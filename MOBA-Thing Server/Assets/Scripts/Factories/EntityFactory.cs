@@ -29,7 +29,7 @@ public class EntityFactory : MonoBehaviour
         MinionController mc = go.GetComponent<MinionController>();
         mc.Initialize(entityCounter, _data);
 
-        GameManager.Entities[_team].Add(entityCounter, mc);
+        GameManager.RegisterEntity(_team, entityCounter, mc);
 
         entityCounter++;
 
@@ -45,7 +45,7 @@ public class EntityFactory : MonoBehaviour
         ChampionController cc = go.GetComponent<ChampionController>();
         cc.Initialize(entityCounter, _data);
 
-        GameManager.Entities[_team].Add(entityCounter, cc);
+        GameManager.RegisterEntity(_team, entityCounter, cc);
 
         entityCounter++;
 

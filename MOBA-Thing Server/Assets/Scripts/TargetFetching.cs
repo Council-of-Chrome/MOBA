@@ -12,7 +12,7 @@ public static class TargetFetching
         foreach (KeyValuePair<Team_Type, bool> team in _mask.Get())
         {
             if (team.Value)
-                foreach (IEntityTargetable target in GameManager.Entities[team.Key].Values)
+                foreach (IEntityTargetable target in GameManager.GetEntities(team.Key))
                 {
                     if (target is IManageNavAgent)
                     {
