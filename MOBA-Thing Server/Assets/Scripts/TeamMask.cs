@@ -24,6 +24,11 @@ public struct TeamMask
         };
     }
 
+    public bool Allows(Team_Type _team)
+    {
+        return (mask & (1 << 0)) != 0 || (mask & (1 << 1)) != 0 || (mask & (1 << 2)) != 0;
+    }
+
     public static TeamMask MaskToIgnoreAllies(Team_Type _allyTeam)
     {
         byte mask = 0b_000;

@@ -107,9 +107,9 @@ public class GameManager : MonoBehaviour
 
     private void Start() //uncomment to test stuff
     {
-        //int idc = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Blue, Vector3.zero).EntityID; //use this for spawning and other move commands
-        //EntityFactory.Instance.SpawnMinion(test2, Team_Type.Red, Vector3.forward * 3);
-        //(entities[Team_Type.Blue][idc] as IManageAbilities).CastAbility(new bool[4] { true, false, false, false }, Vector3.forward);
+        int idc = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Blue, Vector3.zero).EntityID; //use this for spawning and other move commands
+        EntityFactory.Instance.SpawnMinion(test2, Team_Type.Red, Vector3.forward * 3);
+        (entities[Team_Type.Blue][idc] as IManageAbilities).CastAbility(new bool[4] { true, false, false, false }, new Ray(new Vector3(0f, 3f, 3f), Vector3.down));
         //(entities[Team_Type.Blue][idc] as IManageNavAgent).MoveTo(new Vector3(5f, 0f, 5f));
     }
 

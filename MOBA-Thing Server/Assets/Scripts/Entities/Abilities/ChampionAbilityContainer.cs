@@ -12,10 +12,10 @@ public class ChampionAbilityContainer
         Data = _data;
     }
 
-    public void Trigger(Vector3 _pos)
+    public void Trigger(Ray _mouseRay)
     {
         if (IsCastable())
-            (Data as IAbilityCastable).Trigger(EntityID, _pos);
+            (Data as IAbilityCastable).Trigger(EntityID, _mouseRay);
     }
 
     #region Helpers

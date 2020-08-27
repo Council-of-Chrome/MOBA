@@ -37,13 +37,13 @@ public class ChampionController : MonoBehaviour, IEntityTargetable, IManageHealt
         Experience.OnLevelUp -= Levelup;
     }
 
-    public void CastAbility(bool[] _inputs, Vector3 _targetPos)
+    public void CastAbility(bool[] _inputs, Ray _mouseRay)
     {
         for (int i = 0; i < 4; i++)
         {
             if (_inputs[i] && !Abilities.Casting)
             {
-                Abilities.Trigger(i, _targetPos);
+                Abilities.Trigger(i, _mouseRay);
                 return;
             }
         }

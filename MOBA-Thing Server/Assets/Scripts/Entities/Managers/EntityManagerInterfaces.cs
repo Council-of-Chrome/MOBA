@@ -26,5 +26,5 @@ public interface IManageNavAgent
 }
 public interface IManageAbilities
 {
-    void CastAbility(bool[] _inputs, Vector3 _targetPos);
+    void CastAbility(bool[] _inputs, Ray _mouseRay);
 }

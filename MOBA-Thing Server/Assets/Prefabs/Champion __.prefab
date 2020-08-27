@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5746661010959584441}
   - component: {fileID: 5746661010959584439}
   - component: {fileID: 5746661010959584438}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -90,7 +90,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5746661011535470655}
   - component: {fileID: 5746661011535470652}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: NavAgent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -145,7 +145,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5746661012086961705}
   - component: {fileID: 5746661012086961702}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Hitbox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -174,7 +174,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5746661012086961704}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5000001
   m_Height: 2
@@ -190,7 +190,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5746661012450289345}
   - component: {fileID: 671157384}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Champion __
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -235,7 +235,7 @@ GameObject:
   - component: {fileID: 2514795689424541966}
   - component: {fileID: 3626670084348486190}
   - component: {fileID: 2241682179420404180}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}

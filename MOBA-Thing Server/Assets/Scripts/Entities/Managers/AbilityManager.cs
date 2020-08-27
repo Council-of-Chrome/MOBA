@@ -20,9 +20,9 @@ public class AbilityManager
         }
     }
 
-    public void Trigger(int _index, Vector3 _pos)
+    public void Trigger(int _index, Ray _mouseRay)
     {
         Casting = true;
-        abilities[_index].Trigger(_pos);
+        abilities[_index].Trigger(_mouseRay);
     }
 }

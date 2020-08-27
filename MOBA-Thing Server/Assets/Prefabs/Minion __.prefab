@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1874705390343484997}
   - component: {fileID: 771970411190226277}
   - component: {fileID: 2881773612305913503}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -89,7 +89,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8584474948122382196}
   - component: {fileID: 8584474948122382199}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: NavAgent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -145,7 +145,7 @@ GameObject:
   - component: {fileID: 8584474948723991538}
   - component: {fileID: 8584474948723991548}
   - component: {fileID: 8584474948723991549}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -224,7 +224,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8584474949103913354}
   - component: {fileID: 4098860350764199797}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Minion __
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -268,7 +268,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8584474949718907234}
   - component: {fileID: 8584474949718907245}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Hitbox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -297,7 +297,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8584474949718907235}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5000001
   m_Height: 2

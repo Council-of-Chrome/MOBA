@@ -59,7 +59,7 @@ public static class TargetFetching
         return hits.ToArray();
     }
 
-    public static IEntityTargetable[] FetchPolygon(Vector2[] _poly, Vector3 _targetPos, TeamMask _mask)
+    public static IEntityTargetable[] FetchPolygon(Vector2[] _poly, TeamMask _mask)
     {
         if (_poly.Length < 3)
             throw new System.Exception("Poly requires minimum of 3 vertices.");
@@ -83,9 +83,25 @@ public static class TargetFetching
         return hits.ToArray();
     }
 
-    public static IEntityTargetable FetchSingle(Ray _ray)
+    public static IEntityTargetable FetchSingle(Ray _mouseRay, TeamMask _mask)
     {
+        if (Physics.Raycast(_mouseRay, out RaycastHit _hit, Mathf.Infinity))
+        {
+            foreach (MonoBehaviour mono in _hit.transform.GetComponentsInParent<MonoBehaviour>())
+            {
+                if (mono is IEntityTargetable target && _mask.Allows(GameManager.GetTeamOf(target.EntityID)))
+                    return GameManager.GetEntity((mono as IEntityTargetable).EntityID);
+            }
+        }
+        return null;
+    }
 
+    public static Vector3 GetRayPointOn0Plane(Ray _mouseRay)
+    {
+        Plane plane0 = new Plane(Vector3.up, Vector3.zero);
+        if (plane0.Raycast(_mouseRay, out float distance))
+            return _mouseRay.GetPoint(distance);
+        throw new System.Exception("Mouse ray failed to hit 0plane");
     }
 
     private static bool PointInPoly(Vector2[] _poly, Vector3 _targetPos)
