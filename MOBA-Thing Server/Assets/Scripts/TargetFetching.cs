@@ -5,6 +5,8 @@ using UnityEngine;
 
 public static class TargetFetching
 {
+    private const float SECTOR_MULT = 1f * (1f / 360f) * 2f;
+
     public static IEntityTargetable[] FetchAOE(Vector3 _pos, float _angle, float _radius, Vector3 _forward, TeamMask _mask)
     {
         List<IEntityTargetable> hits = new List<IEntityTargetable>();
@@ -20,11 +22,90 @@ public static class TargetFetching
                         Vector3 distance = (_pos - targetPos).normalized;
 
                         if(distance.sqrMagnitude <= Mathf.Pow(_radius, 2f))
-                            if (Vector3.Dot(_forward.normalized, distance) <= _angle * (1f / 360f) * 2f) //within sector
+                            if (Vector3.Dot(_forward.normalized, distance) <= _angle * SECTOR_MULT) //within sector
                                 hits.Add(target);
                     }
                 }
         }
         return hits.ToArray();
+    }
+
+    public static IEntityTargetable[] FetchBox(Vector3 _pos, float _xHalfExtents, float _zHalfExtents, TeamMask _mask)
+    {
+        List<IEntityTargetable> hits = new List<IEntityTargetable>();
+
+        Vector2[] box = new Vector2[4]
+        {    
+            new Vector2(_pos.x - _xHalfExtents, _pos.z + _zHalfExtents),
+            new Vector2(_pos.x + _xHalfExtents, _pos.z + _zHalfExtents),
+            new Vector2(_pos.x + _xHalfExtents, _pos.z - _zHalfExtents),
+            new Vector2(_pos.x - _xHalfExtents, _pos.z + _zHalfExtents)
+        };
+
+        foreach (KeyValuePair<Team_Type, bool> team in _mask.Get())
+        {
+            if (team.Value)
+                foreach (IEntityTargetable target in GameManager.GetEntities(team.Key))
+                {
+                    if (target is IManageNavAgent)
+                    {
+                        Vector3 targetPos = (target as IManageNavAgent).GetPosition();
+
+                        if (PointInPoly(box, targetPos))
+                            hits.Add(target);
+                    }
+                }
+        }
+        return hits.ToArray();
+    }
+
+    public static IEntityTargetable[] FetchPolygon(Vector2[] _poly, Vector3 _targetPos, TeamMask _mask)
+    {
+        if (_poly.Length < 3)
+            throw new System.Exception("Poly requires minimum of 3 vertices.");
+
+        List<IEntityTargetable> hits = new List<IEntityTargetable>();
+
+        foreach (KeyValuePair<Team_Type, bool> team in _mask.Get())
+        {
+            if (team.Value)
+                foreach (IEntityTargetable target in GameManager.GetEntities(team.Key))
+                {
+                    if (target is IManageNavAgent)
+                    {
+                        Vector3 targetPos = (target as IManageNavAgent).GetPosition();
+
+                        if (PointInPoly(_poly, targetPos))
+                            hits.Add(target);
+                    }
+                }
+        }
+        return hits.ToArray();
+
+    }
+
+    public static bool PointInPoly(Vector2[] _poly, Vector3 _targetPos)
+    {
+        Vector2 target = new Vector2(_targetPos.x, _targetPos.z);
+
+        int lastVertIndex = _poly.Length - 1;
+        float angle = GetAngle(_poly[0], target, _poly[lastVertIndex]);
+
+        for (int i = 0; i < lastVertIndex; i++)
+        {
+            angle += GetAngle(_poly[i + 1], target, _poly[i]);
+        }
+
+        return (Mathf.Abs(angle) > 1);
+    }
+    private static float GetAngle(Vector2 _a, Vector2 _b, Vector2 _c)
+    {
+        Vector2 ba = new Vector2(_a.x - _b.x, _a.y - _b.y);
+        Vector2 bc = new Vector2(_c.x - _b.x, _c.y - _b.y);
+
+        float dot = Vector2.Dot(ba, bc);
+        float crossLength = (ba.x * bc.y) - (ba.y * bc.x);
+
+        return Mathf.Atan2(crossLength, dot);
     }
 }
