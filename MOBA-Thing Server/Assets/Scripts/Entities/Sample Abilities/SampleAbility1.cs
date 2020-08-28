@@ -9,6 +9,7 @@ public class SampleAbility1 : Ability, IAbilityCastable, ITargetAOE, IAffectHeal
 
     public float CastTime { get; }
     public float[] CooldownPerLevel { get; }
+    public Timer CooldownTimer { get; private set; }
     public float[] CostPerLevel { get; }
 
     public TeamMask Mask { get; private set; }
@@ -19,7 +20,6 @@ public class SampleAbility1 : Ability, IAbilityCastable, ITargetAOE, IAffectHeal
     public int Angle { get; } = 360;
 
     public ResourceEffector HealthEffector { get; } = new ResourceEffector(-50, Stat_Effector_Type.Flat);
-
 
     public void Trigger(int _casterID, Ray _mouseRay)
     {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -7,17 +8,8 @@ public class GameManager : MonoBehaviour
     public ChampionData test1; //modify this between champion and minion data for testing
     public MinionData test2; //modify this between champion and minion data for testing
 
-    #region Singleton
-    public static GameManager Instance;
     private void OnEnable()
     {
-        if(Instance != null)
-        {
-            Destroy(gameObject);
-            throw new System.Exception("GameManager Instance already claimed.");
-        }
-        Instance = this;
-
         entities = new Dictionary<Team_Type, Dictionary<int, IEntityTargetable>>
         {
             [Team_Type.Blue] = new Dictionary<int, IEntityTargetable>(),
@@ -25,25 +17,10 @@ public class GameManager : MonoBehaviour
             [Team_Type.Neutral] = new Dictionary<int, IEntityTargetable>()
         };
     }
-    #endregion   //may not actually need this
 
+
+    #region Entity Methods
     private static Dictionary<Team_Type, Dictionary<int, IEntityTargetable>> entities;
-
-    public static float MatchTimeMilliseconds { get; private set; } = 0f;
-
-    public static GameClock GameTime { get { return new GameClock(MatchTimeMilliseconds); } }
-    public struct GameClock
-    {
-        public int Minutes { get; private set; }
-        public int Seconds { get; private set; }
-
-        public GameClock(float _time)
-        {
-            Minutes = Mathf.RoundToInt(_time * 0.016f); //0.016f ~= 1f / 60f, faster for compiler
-            Seconds = Mathf.RoundToInt(_time % 60f);
-        }
-    }
-
 
     public static void RegisterEntity(Team_Type _team, int _entityID, IEntityTargetable _entity)
     {
@@ -104,6 +81,7 @@ public class GameManager : MonoBehaviour
             return Team_Type.Red;
         throw new System.Exception("Entity not registered.");
     }
+    #endregion  
 
     private void Start() //uncomment to test stuff
     {
@@ -111,21 +89,5 @@ public class GameManager : MonoBehaviour
         EntityFactory.Instance.SpawnMinion(test2, Team_Type.Red, Vector3.forward * 3);
         (entities[Team_Type.Blue][idc] as IManageAbilities).CastAbility(new bool[4] { true, false, false, false }, new Ray(new Vector3(0f, 3f, 3f), Vector3.down));
         //(entities[Team_Type.Blue][idc] as IManageNavAgent).MoveTo(new Vector3(5f, 0f, 5f));
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        //do shit here probably
-
-        MainThread.Update();
-        MatchTimeMilliseconds += Time.unscaledDeltaTime;
-        /*
-        currentTime += Time.unscaledDeltaTime;
-        if(currentTime >= 1f)
-        {
-            //send message to clients to update clock?
-        }
-        */
     }
 }
