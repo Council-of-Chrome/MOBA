@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GameClock : MonoBehaviour
 {
+    private const float MINUTE_MULT = 1f / 60f;
+
     public static float MatchTimeMilliseconds { get; private set; } = 0f;
 
     public static GameTime ClockTime { get { return new GameTime(MatchTimeMilliseconds); } }
@@ -14,8 +16,13 @@ public class GameClock : MonoBehaviour
 
         public GameTime(float _time)
         {
-            Minutes = Mathf.RoundToInt(_time * 0.016f); //0.016f ~= 1f / 60f, faster for compiler
-            Seconds = Mathf.RoundToInt(_time % 60f);
+            Minutes = Mathf.FloorToInt(_time * MINUTE_MULT);
+            Seconds = Mathf.FloorToInt(_time % 60f);
+        }
+
+        public override string ToString()
+        {
+            return $"Game time: {Minutes.ToString("00")}:{Seconds.ToString("00")}";
         }
     }
 
@@ -32,8 +39,12 @@ public class GameClock : MonoBehaviour
         toRemove.Add(_toUpdate);
     }
 
-    void Update()
+    void FixedUpdate()
     {
+        MatchTimeMilliseconds += Time.fixedDeltaTime;
+        //Debug.Log(MatchTimeMilliseconds);
+        Debug.Log(ClockTime.ToString() + ": " + MatchTimeMilliseconds);
+
         if (toAdd.Count > 0)
         {
             foreach (Action<float> action in toAdd)
@@ -57,6 +68,5 @@ public class GameClock : MonoBehaviour
             }
             toRemove.Clear();
         }
-        MatchTimeMilliseconds += Time.fixedDeltaTime;
     }
 }

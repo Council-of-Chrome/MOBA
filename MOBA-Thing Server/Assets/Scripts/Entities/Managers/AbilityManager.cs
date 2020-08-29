@@ -22,7 +22,10 @@ public class AbilityManager
 
     public void Trigger(int _index, Ray _mouseRay)
     {
-        Casting = true;
-        abilities[_index].Trigger(_mouseRay);
+        if (!Casting)
+        {
+            Casting = true;
+            abilities[_index].Trigger(_mouseRay);
+        }
     }
 }
