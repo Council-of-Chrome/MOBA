@@ -6,6 +6,8 @@ public class AbilityManager
 {
     public bool Casting { get; private set; } = false;
 
+    public int AbilityPointsPool { get; private set; } = 0;
+
     private int EntityID { get; }
     private ChampionAbilityContainer[] abilities;
 
@@ -27,5 +29,19 @@ public class AbilityManager
             Casting = true;
             abilities[_index].Trigger(_mouseRay);
         }
+    }
+
+    public void Levelup(int _level)
+    {
+        AbilityPointsPool++;
+    }
+
+    public void RankupAbility(int _entityLevel, int _abilityIndex)
+    {
+        if (AbilityPointsPool-- <= 0)
+            return;
+
+        if (Mathf.CeilToInt(_entityLevel * 0.5f) <= abilities[_abilityIndex].AbilityRank)
+            abilities[_abilityIndex].RankUp();
     }
 }

@@ -6,7 +6,7 @@ public interface IAbilityCastable : IAbilityCooldown, IAbilityCost
 {
     Timer CooldownTimer { get; }
     float CastTime { get; }
-    void Trigger(int _casterID, Ray _mouseRay);
+    void Trigger(int _casterID, Ray _mouseRay, int _abilityRank);
     TeamMask Mask { get; }
 }
 public interface IAbilityPassive

@@ -19,9 +19,9 @@ public class SampleAbility1 : Ability, IAbilityCastable, ITargetAOE, IAffectHeal
     public float Radius { get { return radius; } }
     public int Angle { get; } = 360;
 
-    public ResourceEffector HealthEffector { get; } = new ResourceEffector(-50, Stat_Effector_Type.Flat);
+    public ResourceEffector[] HealthEffectorPerLevel { get; }
 
-    public void Trigger(int _casterID, Ray _mouseRay)
+    public void Trigger(int _casterID, Ray _mouseRay, int _abilityRank)
     {
         //start animation or smth
         IManageNavAgent self = GameManager.GetEntity(_casterID) as IManageNavAgent;
@@ -35,7 +35,7 @@ public class SampleAbility1 : Ability, IAbilityCastable, ITargetAOE, IAffectHeal
         if (hit != null && hit is IManageHealth)
         {
             float b = (hit as IManageHealth).Health.Current;
-            float f = (hit as IManageHealth).Health.Modify(HealthEffector);
+            float f = (hit as IManageHealth).Health.Modify(HealthEffectorPerLevel[_abilityRank]);
             Debug.Log($"ID: {hit.EntityID} HP: {b}, {f}");
         }
 

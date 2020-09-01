@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
+[RequireComponent(typeof(GameClock))]
 public class GameManager : MonoBehaviour
 {
     public ChampionData test1; //modify this between champion and minion data for testing

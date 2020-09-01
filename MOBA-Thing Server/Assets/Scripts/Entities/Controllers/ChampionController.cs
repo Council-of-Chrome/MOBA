@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 
-public class ChampionController : MonoBehaviour, IEntityTargetable, IManageHealth, IManageResource, IManageAD, IManageEXP, IManageNavAgent, IManageAbilities
+public class ChampionController : MonoBehaviour, IEntityTargetable, IManageHealth, IManageResource, IManageAD, IManageEXP, IManageNavAgent, IManageAbilities, IManageSize
 {
     public int EntityID { get; private set; }
+
+    public Entity_Size BaseSize => Entity_Size.Average;
+    public Entity_Size CurrentSize { get { return BaseSize; } }
 
     public HealthManager Health { get; private set; }
     public ResourceManager Resource { get; private set; }
@@ -23,13 +26,18 @@ public class ChampionController : MonoBehaviour, IEntityTargetable, IManageHealt
         AttackDamage = new ResourceManager(EntityID, _data.BaseAttackDamage, _data.AttackPerLevel);
         Abilities = new AbilityManager(_entityID, _data.Abilities);
 
+        (_data.Innate as IAbilityPassive).Init();
+
         Experience = new ExperienceManager(EntityID, _data.BaseLevel, _data.MaxXPScaler);
         Experience.OnLevelUp += Levelup;
 
         hitbox = transform.GetChild(0).GetComponentInChildren<CapsuleCollider>();
 
         Agent = GetComponentInChildren<NavMeshAgent>();
-        /*agent.agentTypeID = Entity_Sizes.Champion*/
+        if(_data is IChangeSize)
+            hitbox.radius = Agent.radius = (float)(_data as IChangeSize).BaseSize * 0.1f;
+        else
+            hitbox.radius = Agent.radius = (float)BaseSize * 0.1f;
         Agent.speed = _data.BaseMoveSpeed;
     }
     ~ChampionController() //safety destructor
@@ -42,6 +50,7 @@ public class ChampionController : MonoBehaviour, IEntityTargetable, IManageHealt
         Health.Levelup(_newLevel);
         Resource.Levelup(_newLevel);
         AttackDamage.Levelup(_newLevel);
+        Abilities.Levelup(_newLevel);
     }
 
     #region Helpers
@@ -52,6 +61,10 @@ public class ChampionController : MonoBehaviour, IEntityTargetable, IManageHealt
     public void MoveTo(Vector3 _target)
     {
         Agent.SetDestination(_target);
+    }
+    public void ChangeSize(Entity_Size _size)
+    {
+        Agent.radius = (float)_size * 0.1f;
     }
     #endregion
 }

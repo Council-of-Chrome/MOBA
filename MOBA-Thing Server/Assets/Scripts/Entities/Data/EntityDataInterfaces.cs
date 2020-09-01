@@ -20,6 +20,11 @@ public interface ICanLevel
     Func<int, int> MaxXPScaler { get; }
 }
 
+public interface IChangeSize
+{
+    Entity_Size BaseSize { get; }
+}
+
 public interface IMove
 {
     float BaseMoveSpeed { get; }
@@ -57,6 +62,7 @@ public interface IConsumeResource
 
 public interface IUseAbilities
 { 
+    Ability Innate { get; }
     Ability[] Abilities { get; }
 }
 

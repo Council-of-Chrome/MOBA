@@ -34,3 +34,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a70eb6ccf3327ea43b5f5da1f80797cc, type: 2}
   - {fileID: 11400000, guid: a70eb6ccf3327ea43b5f5da1f80797cc, type: 2}
   - {fileID: 11400000, guid: a70eb6ccf3327ea43b5f5da1f80797cc, type: 2}
+  baseSize: 5
