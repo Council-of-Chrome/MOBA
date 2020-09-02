@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class SampleAbility1 : Ability, IAbilityCastable, ITargetAOE, IAffectHealth
 {
