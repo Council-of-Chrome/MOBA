@@ -2,15 +2,11 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Champion", menuName = "Entities/Champion")]
-public class ChampionData : ScriptableObject, IHasName, ICanLevel, IMove, IUseHealth, IAutoAttack, IConsumeResource, IUseAbilities, IChangeSize
+public class ChampionData : ScriptableObject, IHasName, ICanLevel, IMove, IUseHealth, IAutoAttack, IConsumeResource, IUseAbilities
 {
     [SerializeField]
     private string displayName = default;
     public string DisplayName { get { return displayName; } }
-    [Space]
-    [SerializeField]
-    private Entity_Size baseSize = default;
-    public Entity_Size BaseSize { get; }
     [Space]
     [SerializeField]
     private int baseLevel = 1;

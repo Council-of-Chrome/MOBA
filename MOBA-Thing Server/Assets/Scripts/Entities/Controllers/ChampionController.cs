@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 
-public class ChampionController : MonoBehaviour, IEntityTargetable, IManageHealth, IManageResource, IManageAD, IManageEXP, IManageNavAgent, IManageAbilities, IManageSize
+public class ChampionController : MonoBehaviour, IEntityTargetable, IManageHealth, IManageResource, IManageAD, IManageEXP, IManageNavAgent, IManageAbilities, IManageConditions, IManageSize, IManageCrowdControl
 {
     public int EntityID { get; private set; }
 
@@ -10,8 +10,10 @@ public class ChampionController : MonoBehaviour, IEntityTargetable, IManageHealt
 
     public HealthManager Health { get; private set; }
     public ResourceManager Resource { get; private set; }
-    public ResourceManager AttackDamage { get; private set; }
+    public AttackDamageManager AttackDamage { get; private set; }
     public AbilityManager Abilities { get; private set; }
+    public ConditionManager Conditions { get; private set; }
+    public CrowdControlManager CrowdControl { get; private set; }
     public ExperienceManager Experience { get; private set; }
     public NavMeshAgent Agent { get; private set; }
 
@@ -23,10 +25,13 @@ public class ChampionController : MonoBehaviour, IEntityTargetable, IManageHealt
 
         Health = new HealthManager(EntityID, _data.BaseHP, _data.HPPerLevel);
         Resource = new ResourceManager(EntityID, _data.BaseResource, _data.ResourcePerLevel);
-        AttackDamage = new ResourceManager(EntityID, _data.BaseAttackDamage, _data.AttackPerLevel);
-        Abilities = new AbilityManager(_entityID, _data.Abilities);
+        AttackDamage = new AttackDamageManager(EntityID, _data.BaseAttackDamage, _data.AttackPerLevel);
+        Abilities = new AbilityManager(EntityID, _data.Abilities);
+        Conditions = new ConditionManager(EntityID);
+        CrowdControl = new CrowdControlManager(EntityID);
 
-        (_data.Innate as IAbilityPassive).Init();
+        if(_data.Innate is IAbilityPassive)
+            (_data.Innate as IAbilityPassive).Init();
 
         Experience = new ExperienceManager(EntityID, _data.BaseLevel, _data.MaxXPScaler);
         Experience.OnLevelUp += Levelup;
@@ -35,9 +40,9 @@ public class ChampionController : MonoBehaviour, IEntityTargetable, IManageHealt
 
         Agent = GetComponentInChildren<NavMeshAgent>();
         if(_data is IChangeSize)
-            hitbox.radius = Agent.radius = (float)(_data as IChangeSize).BaseSize * 0.1f;
+            hitbox.radius = Agent.radius = ((int)(_data as IChangeSize).BaseSize) * 0.1f;
         else
-            hitbox.radius = Agent.radius = (float)BaseSize * 0.1f;
+            hitbox.radius = Agent.radius = ((int)BaseSize) * 0.1f;
         Agent.speed = _data.BaseMoveSpeed;
     }
     ~ChampionController() //safety destructor
@@ -64,7 +69,7 @@ public class ChampionController : MonoBehaviour, IEntityTargetable, IManageHealt
     }
     public void ChangeSize(Entity_Size _size)
     {
-        Agent.radius = (float)_size * 0.1f;
+        hitbox.radius = Agent.radius = ((int)_size) * 0.1f;
     }
     #endregion
 }

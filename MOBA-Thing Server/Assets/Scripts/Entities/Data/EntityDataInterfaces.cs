@@ -2,6 +2,7 @@
 
 public enum Team_Type { Blue, Neutral, Red }
 public enum Range_Class { Melee, Ranged }
+public enum Entity_Size { Tiny = 1, Small = 3, Average = 5, Large = 7, Huge = 9 } //when using this, divide enum value by 10 to get agent size
 
 //used for right click interactions in the game world
 public interface IEntityTargetable

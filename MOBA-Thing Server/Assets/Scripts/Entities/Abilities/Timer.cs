@@ -5,15 +5,16 @@ using UnityEngine;
 
 public class Timer
 {
-    public float TotalDuration { get; }
+    public float TotalDuration { get; private set; }
     public float CurrentTime { get; private set; }
 
     private Action OnStart { get; }
     private Action OnUpdate { get; }
     private Action OnEnd { get; }
 
-    public void Start()
+    public void Start(float _duration)
     {
+        TotalDuration = _duration;
         OnStart?.Invoke();
         GameClock.AddEventToUpdate(UpdateTick);
     }
@@ -34,16 +35,14 @@ public class Timer
         GameClock.RemoveEventFromUpdate(UpdateTick);
     }
 
-    public void Reset()
+    public void Reset(float _castTime)
     {
         Stop();
-        Start();
+        Start(_castTime);
     }
 
-    public Timer(float _duration, Action _start = null, Action _update = null, Action _end = null)
+    public Timer(Action _start = null, Action _update = null, Action _end = null)
     {
-        TotalDuration = _duration;
-
         OnStart = _start;
         OnUpdate = _update;
         OnEnd = _end;

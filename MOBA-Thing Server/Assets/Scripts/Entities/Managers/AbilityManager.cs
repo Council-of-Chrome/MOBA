@@ -10,6 +10,7 @@ public class AbilityManager
 
     private int EntityID { get; }
     private ChampionAbilityContainer[] abilities;
+    private Timer castTimer;
 
     public AbilityManager(int _entityID, Ability[] _abilities)
     {
@@ -20,20 +21,26 @@ public class AbilityManager
         {
             abilities[i] = new ChampionAbilityContainer(_abilities[i]);
         }
+        castTimer = new Timer(null, null, () => { Casting = false; });
     }
 
     public void Trigger(int _index, Ray _mouseRay)
     {
-        if (!Casting)
+        if (abilities[_index].IsCastable() && abilities[_index].AbilityRank > 0)
         {
-            Casting = true;
-            abilities[_index].Trigger(_mouseRay);
+            if (!Casting)
+            {
+                float castTime = (abilities[_index].Data as IAbilityCastable).CastTime;
+                castTimer.Reset(castTime); //reset calls Stop then Start(), meaning it will set Casting to false. :- set Casting to true AFTER calling reset.
+                Casting = true;
+                abilities[_index].Trigger(_mouseRay);
+            }
         }
     }
 
     public void Levelup(int _level)
     {
-        AbilityPointsPool++;
+        AbilityPointsPool = _level;
     }
 
     public void RankupAbility(int _entityLevel, int _abilityIndex)
@@ -41,7 +48,6 @@ public class AbilityManager
         if (AbilityPointsPool-- <= 0)
             return;
 
-        if (Mathf.CeilToInt(_entityLevel * 0.5f) <= abilities[_abilityIndex].AbilityRank)
-            abilities[_abilityIndex].RankUp();
+        abilities[_abilityIndex].RankUp(_entityLevel);
     }
 }

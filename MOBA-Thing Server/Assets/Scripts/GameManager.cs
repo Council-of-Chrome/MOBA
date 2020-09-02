@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
             return entities[Team_Type.Red][_entityID];
         throw new System.Exception("Entity not registered.");
     }
-
+    //TODO: change plurals to take a TeamMask instead.
     public static IEntityTargetable[] GetEntities()
     {
         IEntityTargetable[] targets = new IEntityTargetable[GetEntityCount()];
@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
         entities[_team].Values.CopyTo(targets, 0);
         return targets;
     }
-
+    //TODO: change plurals to take a TeamMask instead.
     public static int GetEntityCount()
     {
         return entities[Team_Type.Blue].Count +
@@ -86,8 +86,14 @@ public class GameManager : MonoBehaviour
     private void Start() //uncomment to test stuff
     {
         int idc = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Blue, Vector3.zero).EntityID; //use this for spawning and other move commands
-        EntityFactory.Instance.SpawnMinion(test2, Team_Type.Red, Vector3.forward * 3);
-        //(entities[Team_Type.Blue][idc] as IManageAbilities).Abilities.Trigger(0, new Ray(new Vector3(0f, 3f, 3f), Vector3.down));
-        //(entities[Team_Type.Blue][idc] as IManageNavAgent).MoveTo(new Vector3(5f, 0f, 5f));
+        int idm = EntityFactory.Instance.SpawnMinion(test2, Team_Type.Red, Vector3.forward * 3).EntityID;
+
+        (entities[Team_Type.Blue][idc] as IManageEXP).Levelup(1); //champion requires a level to use abilities
+
+        AbilityManager test = (entities[Team_Type.Blue][idc] as IManageAbilities).Abilities;
+        test.RankupAbility(1, 0); //same goes for ability rank
+        test.Trigger(0, new Ray(new Vector3(0f, 3f, 3f), Vector3.down));
+
+        //(entities[Team_Type.Blue][idc] as IManageNavAgent).MoveTo(new Vector3(0f, 0f, 8f));
     }
 }

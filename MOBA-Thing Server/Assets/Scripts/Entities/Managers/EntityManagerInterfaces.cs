@@ -11,7 +11,7 @@ public interface IManageResource
 }
 public interface IManageAD
 {
-    ResourceManager AttackDamage { get; }
+    AttackDamageManager AttackDamage { get; }
 }
 public interface IManageEXP
 {
@@ -28,8 +28,6 @@ public interface IManageAbilities
 {
     AbilityManager Abilities { get; }
 }
-//when using this, divide enum value by 10 to get agent size
-public enum Entity_Size { Tiny = 1, Small = 3, Average = 5, Large = 7, Huge = 9 } 
 public interface IManageSize
 {
     Entity_Size BaseSize { get; }
@@ -38,4 +36,8 @@ public interface IManageSize
 public interface IManageConditions
 {
     ConditionManager Conditions { get; }
+}
+public interface IManageCrowdControl
+{
+    CrowdControlManager CrowdControl { get; }
 }

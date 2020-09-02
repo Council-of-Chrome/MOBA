@@ -42,8 +42,6 @@ public class GameClock : MonoBehaviour
     void FixedUpdate()
     {
         MatchTimeMilliseconds += Time.fixedDeltaTime;
-        //Debug.Log(MatchTimeMilliseconds);
-        Debug.Log(ClockTime.ToString() + ": " + MatchTimeMilliseconds);
 
         if (toAdd.Count > 0)
         {

@@ -96,7 +96,7 @@ public static class TargetFetching
         return null;
     }
 
-    public static Vector3 GetRayPointOn0Plane(Ray _mouseRay)
+    public static Vector3 GetPointOn0PlaneFromRay(Ray _mouseRay)
     {
         Plane plane0 = new Plane(Vector3.up, Vector3.zero);
         if (plane0.Raycast(_mouseRay, out float distance))

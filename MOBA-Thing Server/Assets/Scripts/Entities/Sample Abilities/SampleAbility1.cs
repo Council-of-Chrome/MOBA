@@ -7,7 +7,7 @@ public class SampleAbility1 : Ability, IAbilityCastable, ITargetAOE, IAffectHeal
     public override string AbilityName => "Sample Ability";
     public override string Description => "Does sample shit yo";
 
-    public float CastTime { get; }
+    public float CastTime { get; } = 0f;
     public float[] CooldownPerLevel { get; }
     public Timer CooldownTimer { get; private set; }
     public float[] CostPerLevel { get; }
@@ -18,8 +18,9 @@ public class SampleAbility1 : Ability, IAbilityCastable, ITargetAOE, IAffectHeal
     private float radius = 5;
     public float Radius { get { return radius; } }
     public int Angle { get; } = 360;
-
-    public ResourceEffector[] HealthEffectorPerLevel { get; }
+    [SerializeField]
+    private ResourceEffector[] healthEffectorPerLevel = default;
+    public ResourceEffector[] HealthEffectorPerLevel { get { return healthEffectorPerLevel; } }
 
     public void Trigger(int _casterID, Ray _mouseRay, int _abilityRank)
     {
@@ -27,19 +28,26 @@ public class SampleAbility1 : Ability, IAbilityCastable, ITargetAOE, IAffectHeal
         IManageNavAgent self = GameManager.GetEntity(_casterID) as IManageNavAgent;
 
         Mask = TeamMask.MaskToIgnoreAllies(GameManager.GetTeamOf(_casterID));
-
-        Vector3 targetPoint = TargetFetching.GetRayPointOn0Plane(_mouseRay);
-        Vector3 forwardVec = (targetPoint - self.GetPosition()).normalized;
+        
+        //used for getting the location of a multihit targeting system based on mouse ray
+        //Vector3 targetPoint = TargetFetching.GetPointOn0PlaneFromRay(_mouseRay); 
+        //Vector3 forwardVec = (targetPoint - self.GetPosition()).normalized;
         IEntityTargetable hit = TargetFetching.FetchSingle(_mouseRay, Mask);
 
-        if (hit != null && hit is IManageHealth)
+        if(hit != null)
         {
-            float b = (hit as IManageHealth).Health.Current;
-            float f = (hit as IManageHealth).Health.Modify(HealthEffectorPerLevel[_abilityRank]);
-            Debug.Log($"ID: {hit.EntityID} HP: {b}, {f}");
+            AffectHPInfo info = new AffectHPInfo
+                (
+                hit.EntityID,
+                _casterID,
+                false,
+                HealthEffectorPerLevel[_abilityRank - 1]
+                );
+
+            GameEventSystem.TriggerGameEvent(info);
         }
 
-        //foreach (IEntityTargetable target in hits)
+        //foreach (IEntityTargetable target in hits) //multi hit effect sample
         //{
         //    if (target == self)
         //        continue;

@@ -8,7 +8,7 @@ public class MinionController : MonoBehaviour, IEntityTargetable, IManageHealth,
     public int EntityID { get; private set; }
 
     public HealthManager Health { get; private set; }
-    public ResourceManager AttackDamage { get; private set; }
+    public AttackDamageManager AttackDamage { get; private set; }
     public NavMeshAgent Agent { get; private set; }
 
     private MinionData data;
@@ -18,8 +18,8 @@ public class MinionController : MonoBehaviour, IEntityTargetable, IManageHealth,
     {
         EntityID = _entityID;
 
-        Health = new HealthManager(EntityID, _data.BaseHP, _data.HPPerLevel);
-        AttackDamage = new ResourceManager(EntityID, _data.BaseAttackDamage, _data.AttackPerLevel);
+        Health = new HealthManager(EntityID, _data.BaseHP, _data.HPPerLevel, 23f);
+        AttackDamage = new AttackDamageManager(EntityID, _data.BaseAttackDamage, _data.AttackPerLevel);
 
         hitbox = transform.GetChild(0).GetComponentInChildren<CapsuleCollider>();
 

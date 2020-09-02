@@ -4,35 +4,36 @@ using UnityEngine;
 
 public class ChampionAbilityContainer
 {
-    public int AbilityRank { get; private set; }
+    public int AbilityRank { get; private set; } = 0;
+    public Ability Data { get; }
 
-    private Ability data;
     private int EntityID { get; }
 
     public ChampionAbilityContainer(Ability _data)
     {
-        data = _data;
+        Data = _data;
     }
 
     public void Trigger(Ray _mouseRay)
     {
         if (IsCastable())
-            (data as IAbilityCastable).Trigger(EntityID, _mouseRay, AbilityRank);
+            (Data as IAbilityCastable).Trigger(EntityID, _mouseRay, AbilityRank);
     }
 
-    public void RankUp()
+    public void RankUp(int _entityLevel)
     {
-        AbilityRank = Mathf.Clamp(++AbilityRank, 0, 5);
+        if (Mathf.CeilToInt(_entityLevel * 0.5f) >= AbilityRank)
+            AbilityRank = Mathf.Clamp(++AbilityRank, 0, 5);
     }
 
     #region Helpers
     public bool IsCastable()
     {
-        return data is IAbilityCastable;
+        return Data is IAbilityCastable;
     }
     public bool IsPassive()
     {
-        return data is IAbilityPassive;
+        return Data is IAbilityPassive;
     }
     #endregion  
 }

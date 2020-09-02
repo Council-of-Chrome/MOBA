@@ -1,11 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 public struct ResourceEffector
 {
-    public float Value { get; private set; }
-    public Stat_Effector_Type Type { get; private set; }
+    public float Value;
+    public Stat_Effector_Type Type;
 
     public ResourceEffector(float _val, Stat_Effector_Type _type)
     {

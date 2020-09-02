@@ -4,14 +4,12 @@ public enum Stat_Effector_Type { Flat, PMax, PMiss, PCurrent }
 
 public class ResourceManager
 {
-    public float Shield { get; private set; }
     public float Max { get; private set; }
     public float Current { get; private set; }
-    public bool Invincible { get; set; }
 
-    public delegate float AffectResourceHandler(int _entityID, float _val); //<-- TODO: make more verbose than just 'id', contain team etc
-    public AffectResourceHandler OnPreAffectResource;
-    public AffectResourceHandler OnPostAffectResource;
+   //public delegate float AffectResourceHandler(int _entityID, float _val); //<-- TODO: make more verbose than just 'id', contain team etc
+   //public static AffectResourceHandler OnPreAffectResource;
+   //public static AffectResourceHandler OnPostAffectResource;
 
     private int EntityID { get; }
     private float ResourcePerLvl { get; }
@@ -22,7 +20,6 @@ public class ResourceManager
 
         Current = Max = _baseResource;
         ResourcePerLvl = _ResourcePerLvl;
-        Invincible = false;
     }
 
     /// <summary>Handles all reduction and addition. Use negative values for reduction and positive for addition.</summary>
@@ -32,22 +29,8 @@ public class ResourceManager
     {
         float value = _data.Value;
 
-        if (Shield > Mathf.Abs(_data.Value) && Mathf.Sign(_data.Value) == -1)
-        {
-            Shield -= value; //FIXME: can't do this with anything but flat
-            return Current;
-        }
-
-        value -= Shield; //FIXME: or this
-        Shield = 0f;
-
-        if (OnPreAffectResource != null)
-            value = OnPreAffectResource.Invoke(EntityID, _data.Value);
-
-        if (Invincible)
-            return Current;
-
-        float temp = Current;
+        //if (GameEventSystem.OnPreAffectResource != null)
+        //    value = GameEventSystem.OnPreAffectResource.Invoke(EntityID, _data.Value);
 
         switch (_data.Type)
         {
@@ -61,11 +44,11 @@ public class ResourceManager
                 Current += GetPercentMissing(value);
                 break;
             case Stat_Effector_Type.PCurrent:
-                Current *= 1 - value;
+                Current += Current * value;
                 break;
         }
 
-        OnPostAffectResource?.Invoke(EntityID, Current);
+        //GameEventSystem.OnPostAffectResource?.Invoke(EntityID, Current);
         return Current;
     }
 
@@ -79,7 +62,7 @@ public class ResourceManager
     /// <returns>Given percentage of max resource.</returns>
     public float GetPercentMax(float _percent)
     {
-        return Max * (_percent * (1f / Max));
+        return _percent * Max;
     }
 
     /// <summary>Gets percentage of missing resource</summary>
@@ -87,6 +70,6 @@ public class ResourceManager
     /// <returns>Given percentage of missing resource.</returns>
     public float GetPercentMissing(float _percent)
     {
-        return GetPercentMax(1f - (Current * (1f / Max)));
+        return GetPercentMax((Max - Current) * (1f / Max)) * _percent;
     }
 }
