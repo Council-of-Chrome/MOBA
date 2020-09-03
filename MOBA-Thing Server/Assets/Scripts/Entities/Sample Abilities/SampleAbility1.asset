@@ -13,3 +13,6 @@ MonoBehaviour:
   m_Name: SampleAbility1
   m_EditorClassIdentifier: 
   radius: 5
+  healthEffectorPerLevel:
+  - Value: -10
+    Type: 0

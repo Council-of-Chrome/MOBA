@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class MinionController : MonoBehaviour, IEntityTargetable, IManageHealth, IManageAD, IManageNavAgent
+public class MinionController : MonoBehaviour, IEntityTargetable, IManageHealth, IManageAD, IManageNavAgent, IGrantVision
 {
     public int EntityID { get; private set; }
+
+    public int BaseVisionRadius => 11;
+    public int CurrentVisionRadius { get; private set; } = 11;
 
     public HealthManager Health { get; private set; }
     public AttackDamageManager AttackDamage { get; private set; }

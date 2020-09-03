@@ -1,12 +1,15 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 
-public class ChampionController : MonoBehaviour, IEntityTargetable, IManageHealth, IManageResource, IManageAD, IManageEXP, IManageNavAgent, IManageAbilities, IManageConditions, IManageSize, IManageCrowdControl
+public class ChampionController : MonoBehaviour, IEntityTargetable, IManageHealth, IManageResource, IManageAD, IManageEXP, IManageNavAgent, IManageAbilities, IManageConditions, IManageSize, IManageCrowdControl, IGrantVision
 {
     public int EntityID { get; private set; }
 
     public Entity_Size BaseSize => Entity_Size.Average;
     public Entity_Size CurrentSize { get { return BaseSize; } }
+
+    public int BaseVisionRadius => 12;
+    public int CurrentVisionRadius { get; private set; } = 12;
 
     public HealthManager Health { get; private set; }
     public ResourceManager Resource { get; private set; }

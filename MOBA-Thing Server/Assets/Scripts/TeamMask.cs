@@ -28,6 +28,11 @@ public struct TeamMask
     {
         return (mask & (1 << 0)) != 0 || (mask & (1 << 1)) != 0 || (mask & (1 << 2)) != 0;
     }
+    public TeamMask Flip()
+    {
+        mask = (byte)(~mask);
+        return this;
+    }
 
     public static TeamMask MaskToIgnoreAllies(Team_Type _allyTeam)
     {

@@ -4,11 +4,17 @@ using UnityEngine;
 [RequireComponent(typeof(GameClock))]
 public class GameManager : MonoBehaviour
 {
+    public Texture2D VisionMap;
+
     public ChampionData test1; //modify this between champion and minion data for testing
     public MinionData test2; //modify this between champion and minion data for testing
 
+    private TeamMask blueVisionMask = TeamMask.MaskToIgnoreAllies(Team_Type.Blue);
+    private TeamMask redVisionMask = TeamMask.MaskToIgnoreAllies(Team_Type.Red);
+
     private void OnEnable()
     {
+        Application.targetFrameRate = 60;
         entities = new Dictionary<Team_Type, Dictionary<int, IEntityTargetable>>
         {
             [Team_Type.Blue] = new Dictionary<int, IEntityTargetable>(),
@@ -35,31 +41,37 @@ public class GameManager : MonoBehaviour
             return entities[Team_Type.Red][_entityID];
         throw new System.Exception("Entity not registered.");
     }
-    //TODO: change plurals to take a TeamMask instead.
+    //TODO: make plurals generic?
     public static IEntityTargetable[] GetEntities()
     {
-        IEntityTargetable[] targets = new IEntityTargetable[GetEntityCount()];
-        entities[Team_Type.Blue].Values.CopyTo(targets, 0);
-        entities[Team_Type.Neutral].Values.CopyTo(targets, GetEntityCount(Team_Type.Blue));
-        entities[Team_Type.Red].Values.CopyTo(targets, GetEntityCount(Team_Type.Blue) + GetEntityCount(Team_Type.Neutral));
-        return targets;
+        return GetEntities(TeamMask.MaskToHitAll());
     }
-    public static IEntityTargetable[] GetEntities(Team_Type _team)
+    public static IEntityTargetable[] GetEntities(TeamMask _mask)
     {
-        IEntityTargetable[] targets = new IEntityTargetable[GetEntityCount(_team)];
-        entities[_team].Values.CopyTo(targets, 0);
-        return targets;
+        List<IEntityTargetable> targets = new List<IEntityTargetable>();
+        foreach (KeyValuePair<Team_Type, bool> team in _mask.Get())
+        {
+            if (team.Value)
+                targets.AddRange(entities[team.Key].Values);
+        }
+        return targets.ToArray();
     }
-    //TODO: change plurals to take a TeamMask instead.
+
     public static int GetEntityCount()
     {
         return entities[Team_Type.Blue].Count +
             entities[Team_Type.Neutral].Count +
             entities[Team_Type.Red].Count;
     }
-    public static int GetEntityCount(Team_Type _team)
+    public static int GetEntityCount(TeamMask _mask)
     {
-        return entities[_team].Count;
+        int count = 0;
+        foreach (KeyValuePair<Team_Type, bool> team in _mask.Get())
+        {
+            if (team.Value)
+                count += entities[team.Key].Count;
+        }
+        return count;
     }
 
     public static bool EntityIsTeam(int _entityID, Team_Type _team)
@@ -92,6 +104,116 @@ public class GameManager : MonoBehaviour
         test.RankupAbility(1, 0); //same goes for ability rank
         test.Trigger(0, new Ray(new Vector3(0f, 3f, 3f), Vector3.down));
 
-        //(entities[Team_Type.Blue][idc] as IManageNavAgent).MoveTo(new Vector3(0f, 0f, 8f));
+        (entities[Team_Type.Blue][idc] as IManageNavAgent).MoveTo(new Vector3(0f, 0f, 30f));
+    }
+
+    private void FixedUpdate()
+    {
+        DoVisionPass(blueVisionMask, ref VisionMap);
+        DoVisionPass(redVisionMask, ref VisionMap);
+    }
+
+    List<IEntityTargetable> inVisionBlue = new List<IEntityTargetable>();
+    List<IEntityTargetable> inVisionRed = new List<IEntityTargetable>();
+
+    private static void DoVisionPass(TeamMask _mask, ref Texture2D _visionMap)
+    {
+        IEntityTargetable[] targets = GetEntities(_mask);
+
+        IEntityTargetable[] allies = GetEntities(_mask.Flip());
+
+        List<IEntityTargetable> targetsInVision = new List<IEntityTargetable>();
+
+        foreach (IEntityTargetable ally in allies)
+        {
+            if(!(ally is IGrantVision))
+                continue;
+
+            foreach (IEntityTargetable target in targets)
+            {
+                Vector3 allyPos = ally.GetPosition(); //position isnt in texture space
+                Vector2 allyPosFloored = new Vector2(allyPos.x + 40f, allyPos.z + 40f); // +40 moves 0,0 to bottom left corner || pos +40 /80 == normalized 0,0 bot left 1,1 top right 256 * normalized.floor() pos on vision map
+                allyPosFloored /= 80;
+                allyPosFloored *= 256; //<-- should be in correctly mapped unit space now
+
+                Vector3 targetPos = target.GetPosition();
+                Vector2 targetPosFloored = new Vector2(targetPos.x + 40f, targetPos.z + 40f);
+                targetPosFloored /= 80;
+                targetPosFloored *= 256;
+
+                //Debug.Log($"ally x: {allyPosFloored.x}, ally y: {allyPosFloored.y} || target x: {targetPosFloored.x}, target y: {targetPosFloored.y}");
+                if (IsInRangeOnVisionMap(allyPosFloored, targetPosFloored, ref _visionMap, (ally as IGrantVision).CurrentVisionRadius))
+                    targetsInVision.Add(target);
+            }
+            Debug.Log($"{targetsInVision.Count}");
+        }
+
+        //TODO: get previous frame's array for desired team colour and check entities that are new to or no longer in the new list,
+        //use this to then ping specified team's player's about modifying visibility client-side
+    }
+
+    static bool IsInRangeOnVisionMap(Vector2 _a, Vector2 _b, ref Texture2D _visionMap, int MaxVisionRadius)
+    {
+        if (GetDistanceSqrButVectors(_a, _b) > (MaxVisionRadius * MaxVisionRadius) * 2)
+        {
+            //Debug.Log(GetDistanceSqrButVectors(_a, _b));
+            return false;
+        }
+
+        int w = (int)(_b.x - _a.x);
+        int h = (int)(_b.y - _a.y);
+
+        int dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
+
+        if (w < 0) dx1 = -1; else if (w > 0) dx1 = 1;
+        if (h < 0) dy1 = -1; else if (h > 0) dy1 = 1;
+        if (w < 0) dx2 = -1; else if (w > 0) dx2 = 1;
+
+        int longest = Mathf.Abs(w);
+        int shortest = Mathf.Abs(h);
+
+        if (!(longest > shortest))
+        {
+            int tmp = longest;
+            longest = shortest;
+            shortest = tmp;
+
+            if (h < 0) dy2 = -1; else if (h > 0) dy2 = 1;
+            dx2 = 0;
+        }
+
+        int numerator = longest >> 1;
+
+        int iteratorPosX = (int)_a.x;
+        int iteratorPosY = (int)_a.y;
+
+        for (int i = 0; i <= longest; i++)
+        {
+            //putpixel(x, y, color); <-- read texture 2d from here
+            if (_visionMap.GetPixel(iteratorPosX, iteratorPosY).r == 0)
+            {
+                Debug.Log($"x: {iteratorPosX}, y: {iteratorPosY}, is black");
+                return false;
+            }
+
+            numerator += shortest;
+            if (!(numerator < longest))
+            {
+                numerator -= longest;
+                iteratorPosX += dx1;
+                iteratorPosY += dy1;
+            }
+            else
+            {
+                iteratorPosX += dx2;
+                iteratorPosY += dy2;
+            }
+        }
+        //this point comparison is legal, target is within vision of the other.
+        return true;
+    }
+    static int GetDistanceSqrButVectors(Vector2 _a, Vector2 _b)
+    {
+        return (int)((_a.x - _b.x) * (_a.x - _b.x) + (_a.y - _b.y) * (_a.y - _b.y));
     }
 }

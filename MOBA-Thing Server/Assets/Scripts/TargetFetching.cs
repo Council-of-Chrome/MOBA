@@ -11,21 +11,14 @@ public static class TargetFetching
     {
         List<IEntityTargetable> hits = new List<IEntityTargetable>();
 
-        foreach (KeyValuePair<Team_Type, bool> team in _mask.Get())
+        foreach (IEntityTargetable target in GameManager.GetEntities(_mask))
         {
-            if (team.Value)
-                foreach (IEntityTargetable target in GameManager.GetEntities(team.Key))
-                {
-                    if (target is IManageNavAgent)
-                    {
-                        Vector3 targetPos = (target as IManageNavAgent).GetPosition();
-                        Vector3 distance = (_pos - targetPos).normalized;
+            Vector3 targetPos = target.GetPosition();
+            Vector3 distance = (_pos - targetPos).normalized;
 
-                        if(distance.sqrMagnitude <= Mathf.Pow(_radius, 2f))
-                            if (Vector3.Dot(_forward.normalized, distance) <= _angle * SECTOR_MULT) //within sector
-                                hits.Add(target);
-                    }
-                }
+            if(distance.sqrMagnitude <= Mathf.Pow(_radius, 2f))
+                if (Vector3.Dot(_forward.normalized, distance) <= _angle * SECTOR_MULT) //within sector
+                    hits.Add(target);
         }
         return hits.ToArray();
     }
@@ -42,19 +35,12 @@ public static class TargetFetching
             new Vector2(_pos.x - _xHalfExtents, _pos.z + _zHalfExtents)
         };
 
-        foreach (KeyValuePair<Team_Type, bool> team in _mask.Get())
+        foreach (IEntityTargetable target in GameManager.GetEntities(_mask))
         {
-            if (team.Value)
-                foreach (IEntityTargetable target in GameManager.GetEntities(team.Key))
-                {
-                    if (target is IManageNavAgent)
-                    {
-                        Vector3 targetPos = (target as IManageNavAgent).GetPosition();
+            Vector3 targetPos = target.GetPosition();
 
-                        if (PointInPoly(box, targetPos))
-                            hits.Add(target);
-                    }
-                }
+            if (PointInPoly(box, targetPos))
+                hits.Add(target);
         }
         return hits.ToArray();
     }
@@ -66,19 +52,12 @@ public static class TargetFetching
 
         List<IEntityTargetable> hits = new List<IEntityTargetable>();
 
-        foreach (KeyValuePair<Team_Type, bool> team in _mask.Get())
+        foreach (IEntityTargetable target in GameManager.GetEntities(_mask))
         {
-            if (team.Value)
-                foreach (IEntityTargetable target in GameManager.GetEntities(team.Key))
-                {
-                    if (target is IManageNavAgent)
-                    {
-                        Vector3 targetPos = (target as IManageNavAgent).GetPosition();
+            Vector3 targetPos = target.GetPosition();
 
-                        if (PointInPoly(_poly, targetPos))
-                            hits.Add(target);
-                    }
-                }
+            if (PointInPoly(_poly, targetPos))
+                hits.Add(target);
         }
         return hits.ToArray();
     }

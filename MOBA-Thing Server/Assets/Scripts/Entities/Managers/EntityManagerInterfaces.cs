@@ -1,6 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 
+//used for right click interactions in the game world
+public interface IEntityTargetable
+{
+    int EntityID { get; }
+    Vector3 GetPosition();
+}
 public interface IManageHealth
 {
     HealthManager Health { get; }
@@ -21,7 +27,6 @@ public interface IManageEXP
 public interface IManageNavAgent
 {
     NavMeshAgent Agent { get; }
-    Vector3 GetPosition();
     void MoveTo(Vector3 _target);
 }
 public interface IManageAbilities
@@ -40,4 +45,9 @@ public interface IManageConditions
 public interface IManageCrowdControl
 {
     CrowdControlManager CrowdControl { get; }
+}
+public interface IGrantVision
+{
+    int BaseVisionRadius { get; }
+    int CurrentVisionRadius { get; }
 }
