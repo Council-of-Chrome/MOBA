@@ -8,8 +8,8 @@ public class ChampionController : MonoBehaviour, IEntityTargetable, IManageHealt
     public Entity_Size BaseSize => Entity_Size.Average;
     public Entity_Size CurrentSize { get { return BaseSize; } }
 
-    public int BaseVisionRadius => 24;
-    public int CurrentVisionRadius { get; private set; } = 24;
+    public int BaseVisionRadius => 50; //24 seems pretty good, maybe slightly larger
+    public int CurrentVisionRadius { get; private set; } = 50;
 
     public HealthManager Health { get; private set; }
     public ResourceManager Resource { get; private set; }

@@ -93,37 +93,27 @@ public class GameManager : MonoBehaviour
 
     private void Start() //uncomment to test stuff
     {
-        int idc1 = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Blue, Vector3.zero).EntityID; //use this for spawning and other move commands
-        int idc2 = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Blue, Vector3.zero).EntityID; //use this for spawning and other move commands
-        int idc3 = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Blue, Vector3.zero).EntityID; //use this for spawning and other move commands
-        int idc4 = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Blue, Vector3.zero).EntityID; //use this for spawning and other move commands
-        int idc5 = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Blue, Vector3.zero).EntityID; //use this for spawning and other move commands
+        Vector3 spawnpos1 = (new Vector3(119f, 0, 203) / 256) * 80;
+        spawnpos1.x -= 40f;
+        spawnpos1.z -= 40f;
 
-        int idc6 = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Red, Vector3.zero).EntityID; //use this for spawning and other move commands
-        int idc7 = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Red, Vector3.zero).EntityID; //use this for spawning and other move commands
-        int idc8 = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Red, Vector3.zero).EntityID; //use this for spawning and other move commands
-        int idc9 = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Red, Vector3.zero).EntityID; //use this for spawning and other move commands
-        int idc10 = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Red, Vector3.zero).EntityID; //use this for spawning and other move commands
+        Vector3 spawnpos2 = (new Vector3(123f, 0, 156f) / 256) * 80;
+        spawnpos2.x -= 40f;
+        spawnpos2.z -= 40f;
+
+        int idc1 = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Blue, spawnpos1).EntityID; //use this for spawning and other move commands
+        int idc2 = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Red, spawnpos2).EntityID; //use this for spawning and other move commands
 
         //int idm = EntityFactory.Instance.SpawnMinion(test2, Team_Type.Red, Vector3.forward * 3).EntityID;
 
-        (entities[Team_Type.Blue][idc1] as IManageEXP).Levelup(1); //champion requires a level to use abilities
+        //(entities[Team_Type.Blue][idc] as IManageEXP).Levelup(1); //champion requires a level to use abilities
 
-        AbilityManager test = (entities[Team_Type.Blue][idc1] as IManageAbilities).Abilities;
-        test.RankupAbility(1, 0); //same goes for ability rank
-        test.Trigger(0, new Ray(new Vector3(0f, 3f, 3f), Vector3.down));
+        //AbilityManager test = (entities[Team_Type.Blue][idc] as IManageAbilities).Abilities;
+        //test.RankupAbility(1, 0); //same goes for ability rank
+        //test.Trigger(0, new Ray(new Vector3(0f, 3f, 3f), Vector3.down));
 
-        (entities[Team_Type.Blue][idc1] as IManageNavAgent).MoveTo(new Vector3(0f, 0f, 5f));
-        (entities[Team_Type.Blue][idc2] as IManageNavAgent).MoveTo(new Vector3(1f, 0f, 4f));
-        (entities[Team_Type.Blue][idc3] as IManageNavAgent).MoveTo(new Vector3(2f, 0f, 3f));
-        (entities[Team_Type.Blue][idc4] as IManageNavAgent).MoveTo(new Vector3(3f, 0f, 2f));
-        (entities[Team_Type.Blue][idc5] as IManageNavAgent).MoveTo(new Vector3(4f, 0f, 1f));
+        //(entities[Team_Type.Blue][idc] as IManageNavAgent).MoveTo(new Vector3(-40f, 0f, -40f));
 
-        (entities[Team_Type.Red][idc6] as IManageNavAgent).MoveTo(new Vector3(0f, 0f, -5f));
-        (entities[Team_Type.Red][idc7] as IManageNavAgent).MoveTo(new Vector3(-1f, 0f, -4f));
-        (entities[Team_Type.Red][idc8] as IManageNavAgent).MoveTo(new Vector3(-2f, 0f, -3f));
-        (entities[Team_Type.Red][idc9] as IManageNavAgent).MoveTo(new Vector3(-3f, 0f, -2f));
-        (entities[Team_Type.Red][idc10] as IManageNavAgent).MoveTo(new Vector3(-4f, 0f, -1f));
     }
 
     private void FixedUpdate()
@@ -204,15 +194,16 @@ public class GameManager : MonoBehaviour
             {
                 Vector3 allyPos = ally.GetPosition(); //position isnt in texture space
                 Vector2 allyPosFloored = new Vector2(allyPos.x + 40f, allyPos.z + 40f); // +40 moves 0,0 to bottom left corner || pos +40 /80 == normalized 0,0 bot left 1,1 top right 256 * normalized.floor() pos on vision map
-                allyPosFloored /= 80;
-                allyPosFloored *= 256; //<-- should be in correctly mapped unit space now
+                allyPosFloored /= 80f;
+                allyPosFloored *= 256f; //<-- should be in correctly mapped unit space now
 
                 Vector3 targetPos = target.GetPosition();
                 Vector2 targetPosFloored = new Vector2(targetPos.x + 40f, targetPos.z + 40f);
-                targetPosFloored /= 80;
-                targetPosFloored *= 256;
+                targetPosFloored /= 80f;
+                targetPosFloored *= 256f;
 
                 //Debug.Log($"ally x: {allyPosFloored.x}, ally y: {allyPosFloored.y} || target x: {targetPosFloored.x}, target y: {targetPosFloored.y}");
+                //Debug.DrawLine(allyPosFloored, targetPosFloored, Color.blue, .1f);
                 if (IsInRangeOnVisionMap(allyPosFloored, targetPosFloored, ref _visionMap, (ally as IGrantVision).CurrentVisionRadius))
                     targetsInVision.Add(target.EntityID);
             }
@@ -346,7 +337,7 @@ public class GameManager : MonoBehaviour
             //putpixel(x, y, color); <-- read texture 2d from here
             if (_visionMap.GetPixel(iteratorPosX, iteratorPosY).r == 0)
             {
-                UnityEngine.Debug.Log($"x: {iteratorPosX}, y: {iteratorPosY}, is black");
+                Debug.Log($"x: {iteratorPosX}, y: {iteratorPosY}, is black");
                 return false;
             }
 
@@ -364,6 +355,7 @@ public class GameManager : MonoBehaviour
             }
         }
         //this point comparison is legal, target is within vision of the other.
+        //Debug.DrawLine((new Vector3(_a.x, 0f, _a.y) /256) * 80, (new Vector3(iteratorPosX, 0f, iteratorPosY) / 256) * 80, Color.green, .1f);
         return true;
     }
     static int GetDistanceSqrButVectors(Vector2 _a, Vector2 _b)

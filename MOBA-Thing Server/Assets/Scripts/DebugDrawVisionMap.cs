@@ -1,18 +1,18 @@
-﻿//#define OFF
+﻿#define ON
 
 using UnityEngine;
 
 public class DebugDrawVisionMap : MonoBehaviour
 {
     public Texture2D VisionMap;
-#if OFF
+#if ON
     public bool DrawDebug = true;
 #endif
     private const float MAP_CELL_SIZE = 80f / 256f;
 
     private void OnDrawGizmos()
     {
-#if OFF
+#if ON
         if(DrawDebug)
             for (int y = 0; y < VisionMap.height; y++)
             {
