@@ -335,6 +335,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i <= longest; i++)
         {
             //putpixel(x, y, color); <-- read texture 2d from here
+            //TODO: add bush registration somehow
             if (_visionMap.GetPixel(iteratorPosX, iteratorPosY).r == 0)
             {
                 Debug.Log($"x: {iteratorPosX}, y: {iteratorPosY}, is black");
