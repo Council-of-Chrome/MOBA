@@ -7,8 +7,8 @@ public class MinionController : MonoBehaviour, IEntityTargetable, IManageHealth,
 {
     public int EntityID { get; private set; }
 
-    public int BaseVisionRadius => 11;
-    public int CurrentVisionRadius { get; private set; } = 11;
+    public int BaseVisionRadius => 18;
+    public int CurrentVisionRadius { get; private set; } = 18;
 
     public HealthManager Health { get; private set; }
     public AttackDamageManager AttackDamage { get; private set; }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(GameClock))]
@@ -8,9 +9,6 @@ public class GameManager : MonoBehaviour
 
     public ChampionData test1; //modify this between champion and minion data for testing
     public MinionData test2; //modify this between champion and minion data for testing
-
-    private TeamMask blueVisionMask = TeamMask.MaskToIgnoreAllies(Team_Type.Blue);
-    private TeamMask redVisionMask = TeamMask.MaskToIgnoreAllies(Team_Type.Red);
 
     private void OnEnable()
     {
@@ -95,34 +93,107 @@ public class GameManager : MonoBehaviour
 
     private void Start() //uncomment to test stuff
     {
-        int idc = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Blue, Vector3.zero).EntityID; //use this for spawning and other move commands
-        int idm = EntityFactory.Instance.SpawnMinion(test2, Team_Type.Red, Vector3.forward * 3).EntityID;
+        int idc1 = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Blue, Vector3.zero).EntityID; //use this for spawning and other move commands
+        int idc2 = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Blue, Vector3.zero).EntityID; //use this for spawning and other move commands
+        int idc3 = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Blue, Vector3.zero).EntityID; //use this for spawning and other move commands
+        int idc4 = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Blue, Vector3.zero).EntityID; //use this for spawning and other move commands
+        int idc5 = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Blue, Vector3.zero).EntityID; //use this for spawning and other move commands
 
-        (entities[Team_Type.Blue][idc] as IManageEXP).Levelup(1); //champion requires a level to use abilities
+        int idc6 = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Red, Vector3.zero).EntityID; //use this for spawning and other move commands
+        int idc7 = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Red, Vector3.zero).EntityID; //use this for spawning and other move commands
+        int idc8 = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Red, Vector3.zero).EntityID; //use this for spawning and other move commands
+        int idc9 = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Red, Vector3.zero).EntityID; //use this for spawning and other move commands
+        int idc10 = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Red, Vector3.zero).EntityID; //use this for spawning and other move commands
 
-        AbilityManager test = (entities[Team_Type.Blue][idc] as IManageAbilities).Abilities;
+        //int idm = EntityFactory.Instance.SpawnMinion(test2, Team_Type.Red, Vector3.forward * 3).EntityID;
+
+        (entities[Team_Type.Blue][idc1] as IManageEXP).Levelup(1); //champion requires a level to use abilities
+
+        AbilityManager test = (entities[Team_Type.Blue][idc1] as IManageAbilities).Abilities;
         test.RankupAbility(1, 0); //same goes for ability rank
         test.Trigger(0, new Ray(new Vector3(0f, 3f, 3f), Vector3.down));
 
-        (entities[Team_Type.Blue][idc] as IManageNavAgent).MoveTo(new Vector3(0f, 0f, 30f));
+        (entities[Team_Type.Blue][idc1] as IManageNavAgent).MoveTo(new Vector3(0f, 0f, 5f));
+        (entities[Team_Type.Blue][idc2] as IManageNavAgent).MoveTo(new Vector3(1f, 0f, 4f));
+        (entities[Team_Type.Blue][idc3] as IManageNavAgent).MoveTo(new Vector3(2f, 0f, 3f));
+        (entities[Team_Type.Blue][idc4] as IManageNavAgent).MoveTo(new Vector3(3f, 0f, 2f));
+        (entities[Team_Type.Blue][idc5] as IManageNavAgent).MoveTo(new Vector3(4f, 0f, 1f));
+
+        (entities[Team_Type.Red][idc6] as IManageNavAgent).MoveTo(new Vector3(0f, 0f, -5f));
+        (entities[Team_Type.Red][idc7] as IManageNavAgent).MoveTo(new Vector3(-1f, 0f, -4f));
+        (entities[Team_Type.Red][idc8] as IManageNavAgent).MoveTo(new Vector3(-2f, 0f, -3f));
+        (entities[Team_Type.Red][idc9] as IManageNavAgent).MoveTo(new Vector3(-3f, 0f, -2f));
+        (entities[Team_Type.Red][idc10] as IManageNavAgent).MoveTo(new Vector3(-4f, 0f, -1f));
     }
 
     private void FixedUpdate()
     {
-        DoVisionPass(blueVisionMask, ref VisionMap);
-        DoVisionPass(redVisionMask, ref VisionMap);
+        DoVisionPass(Team_Type.Blue, ref VisionMap);
+        DoVisionPass(Team_Type.Red, ref VisionMap);
     }
 
-    List<IEntityTargetable> inVisionBlue = new List<IEntityTargetable>();
-    List<IEntityTargetable> inVisionRed = new List<IEntityTargetable>();
+    static List<int> inVisionBlue = new List<int>();
+    static List<int> inVisionRed = new List<int>();
 
-    private static void DoVisionPass(TeamMask _mask, ref Texture2D _visionMap)
+    private static void DoVisionPass(Team_Type _team, ref Texture2D _visionMap)
     {
-        IEntityTargetable[] targets = GetEntities(_mask);
+        //                              ,,..
+        //                            ,@$$$$$.
+        //                          .,$$$$$$$$i
+        //                    .,z$""')$$$$$$$$C`^#`-..
+        //                 ,zF'        `""#*"'       "*o.
+        //              ,zXe > u:..        ..      "c
+        //            ,' zP'    ,:`"          .            "N.
+        //          ,d",d$   ,'"   ,uB" .,uee..,?R.  ,  .    ^$.
+        //        ,@P d$"     .:$$$$$$$$$$$$$@$CJN.,"    `     #b
+        //       z$" d$P    :SM$$$$$$$$$$$$$$$$$$$Nf.           ^$.
+        //      J$" J$P  , ,@$$$$$$$$$$$$$$$$$$$$$$$$$k.         "$r
+        //     z$   $$.   ,$$$$$$$$$$$$$$$$$$$$$$$$$$f'   .    .   $b
+        //    ,$"  $$u,-.x'^""$$$$$$$$$$$$$$$$$$$$$$$$$.        `.  $k
+        //    $"  :$$$$> 8.   `#$$$$$$$$$$$$$$$$$$$$$"\  d.F   $.
+        //   $P.$$$$$N `$b.  $$$$$$$$$$$$$$$$$$$$$k.$  $"  :   '   `$
+        //  {$'  4$$k $$c `*$.,Q$$$$$$$$$$$$$$$$$$$$$$$ ..            $L
+        //  $P   4$$$$$F:   `"$$$$$$$$$$$$$$$$$$$$$$'`$".   ,    `$
+        // ,$'  ,$$$$$d$$    '##$$c3$$$$$$$$$$$$$$$$. '      :   L.    $.
+        // J$  u$$$$$$$$$.,oed$*$$$$N "#$$$$$$$$$$***$@$N. , $  ,B$$N.,9L
+        // $F,$$$$$$$$$$,@*"'  `J$$$$$#h$$$$$$P"`     `"*$$. $4W$' "$$uJF
+        // 4$$$$$$$$$$$$F'      $*'`$$RR@$$$$$R        ,' "$d$4"    '$$$R
+        //,$$$$$$$$$$$$$F     ,'    @$.3$$$$ R>            `$F$  dN.4$$$$.
+        //$$$$$$$$$$$$*$"          J$'$$$$$& $.             $'   $$$$$$$$$o
+        //^$$$$$$$$$$B@$$          $P $$$"?N/$k             $r   $$P" *$$$$'
+        //  $$i.$$$$"$'         $$ ~R$P '$k^$$,'          $   "'  ,d$$'
+        //  $$$$ J$$$$ `,'    .,z$P'd.$P   #$. #$$u.       .$  eu. ,d$$$
+        //  $^$$$$$$$$. `"=+=N#'.,d$M$$'   `$$@s.#$$$u.   ,$C  $$$@$$$"$
+        //  "  `*$$$$$$bx..        ,M$"     `*$$$b/""$R"*"'d$ ,$$$$P"  '
+        //  4     "$$k3$9$$B.e.  ,ud$F       `3$$$$b.      ,$,@R$*'    4
+        //  {       *$$$$$$$b$$@$$$$$L   ,.  ,J$$.'**$$k$NX$"M"'       .
+        //  $         "$#"  `" {$$$$$$c,z$N.,o$$$$   ,NW$*"'           $
+        //  $.         ',    `$$$$$$$$$d$$$$$$$$$f ,$e*'               $
+        // ,$c         d.     `^$$$$$$$$$$$$$$$$$.u '"                :$.
+        // $$$         $\   .,  `"#$$$*$$$$$$$$$$$$ '                 4$F
+        // $$"         $ `  k.`.     ``"#`"""'      ,' ,'             `$$
+        // `"          $>,  `b.,ce(b:o uz CCLd$4$*F?\,o                "'
+        //             $&    $$k'*"$$$$$$#$$$$$$$$$$ d'
+        //             $$.,$$$$$$$$,e,$#$.*$`""""'e4 $
+        //             `$$$$  ^$$\$"$$$$$$$$$$$$$$$.eL
+        //              $$$"  $$$$$$$e$.$.$$.$e$d$$$$k
+        //              R`$$  '$$$$$$$$$$$$$$$$$$$$$$P
+        //              `  $Nc'"$$N3$$$$$$$$$$$$$$$$$'
+        //                  *$  9$.`@$$$$$$$$$$R$$$#'
+        //                   `$.  `"*$$$$$$$$$$P'' #
+        //                     "$u.    `""""''   ,'
+        //                       `"$Nu..  .,z{p"'
+        //                           `"####""'
+        // BE WARNED: this shit gets fucking whacky, fucking with this may
+        // potentially fuck up vision registration of all clients and 
+        // also hit detection. Fuck with at your own risk.
 
-        IEntityTargetable[] allies = GetEntities(_mask.Flip());
+        TeamMask mask = TeamMask.MaskToIgnoreAllies(_team);
 
-        List<IEntityTargetable> targetsInVision = new List<IEntityTargetable>();
+        IEntityTargetable[] targets = GetEntities(mask);
+        IEntityTargetable[] allies = GetEntities(mask.Flip());
+
+        List<int> targetsInVision = new List<int>();
 
         foreach (IEntityTargetable ally in allies)
         {
@@ -143,13 +214,96 @@ public class GameManager : MonoBehaviour
 
                 //Debug.Log($"ally x: {allyPosFloored.x}, ally y: {allyPosFloored.y} || target x: {targetPosFloored.x}, target y: {targetPosFloored.y}");
                 if (IsInRangeOnVisionMap(allyPosFloored, targetPosFloored, ref _visionMap, (ally as IGrantVision).CurrentVisionRadius))
-                    targetsInVision.Add(target);
+                    targetsInVision.Add(target.EntityID);
             }
-            Debug.Log($"{targetsInVision.Count}");
+            //Debug.Log($"{targetsInVision.Count}");
         }
 
-        //TODO: get previous frame's array for desired team colour and check entities that are new to or no longer in the new list,
+        //get previous frame's array for desired team colour and check entities that are new to or no longer in the new list,
         //use this to then ping specified team's player's about modifying visibility client-side
+
+        switch (_team)
+        {
+            case Team_Type.Blue: //should prolly just test if new vision list and last frame are the same for reduced calcs
+            {
+                if (CompareLists(inVisionBlue, targetsInVision))
+                    return;
+
+                IEnumerable<int> leftVision = inVisionBlue.Where(x => !targetsInVision.Contains(x));
+                IEnumerable<int> enteredVision = targetsInVision.Where(x => !inVisionBlue.Contains(x));
+                //tell blue clients who entered and left
+
+                foreach (int id in leftVision)
+                {
+                    (GetEntity(id) as IManageNavAgent).Agent.transform.GetChild(1).GetComponent<MeshRenderer>().material.color = Color.red;
+                }
+                foreach (int id in enteredVision)
+                {
+                    (GetEntity(id) as IManageNavAgent).Agent.transform.GetChild(1).GetComponent<MeshRenderer>().material.color = Color.yellow;
+                }
+
+                inVisionBlue = targetsInVision;
+                break;
+            }
+            case Team_Type.Red:
+            {
+                if (CompareLists(inVisionRed, targetsInVision))
+                    return;
+
+                IEnumerable<int> leftVision = inVisionRed.Where(x => !targetsInVision.Contains(x));
+                IEnumerable<int> enteredVision = targetsInVision.Where(x => !inVisionRed.Contains(x));
+                //tell red clients who entered and left
+
+                foreach (int id in leftVision)
+                {
+                    (GetEntity(id) as IManageNavAgent).Agent.transform.GetChild(1).GetComponent<MeshRenderer>().material.color = Color.blue;
+                }
+                foreach (int id in enteredVision)
+                {
+                    (GetEntity(id) as IManageNavAgent).Agent.transform.GetChild(1).GetComponent<MeshRenderer>().material.color = Color.cyan;
+                }
+
+                inVisionRed = targetsInVision;
+                break;
+            }
+        }
+
+        //if (_mask.Allows(Team_Type.Blue)) //is currently allowing blue on both passes, shouldn't be happening
+        //{
+        //    Debug.Log("Blues turn");
+        //    IEnumerable<int> leftVision = inVisionBlue.Where(x => !targetsInVision.Contains(x));
+        //    IEnumerable<int> enteredVision = targetsInVision.Where(x => !inVisionBlue.Contains(x));
+        //    //tell blue clients who entered and left
+
+        //    foreach (int id in leftVision)
+        //    {
+        //        (GetEntity(id) as IManageNavAgent).Agent.transform.GetChild(1).GetComponent<MeshRenderer>().material.color = Color.red;
+        //    }
+        //    foreach (int id in enteredVision)
+        //    {
+        //        (GetEntity(id) as IManageNavAgent).Agent.transform.GetChild(1).GetComponent<MeshRenderer>().material.color = Color.green;
+        //    }
+
+        //    inVisionBlue = targetsInVision;
+        //}
+        //else
+        //{
+        //    Debug.Log("Reds turn");
+        //    IEnumerable<int> leftVision = inVisionRed.Where(x => !targetsInVision.Contains(x));
+        //    IEnumerable<int> enteredVision = targetsInVision.Where(x => !inVisionRed.Contains(x));
+        //    //tell red clients who entered and left
+
+        //    foreach (int id in leftVision)
+        //    {
+        //        (GetEntity(id) as IManageNavAgent).Agent.transform.GetChild(1).GetComponent<MeshRenderer>().material.color = Color.blue;
+        //    }
+        //    foreach (int id in enteredVision)
+        //    {
+        //        (GetEntity(id) as IManageNavAgent).Agent.transform.GetChild(1).GetComponent<MeshRenderer>().material.color = Color.yellow;
+        //    }
+
+        //    inVisionRed = targetsInVision;
+        //}
     }
 
     static bool IsInRangeOnVisionMap(Vector2 _a, Vector2 _b, ref Texture2D _visionMap, int MaxVisionRadius)
@@ -192,7 +346,7 @@ public class GameManager : MonoBehaviour
             //putpixel(x, y, color); <-- read texture 2d from here
             if (_visionMap.GetPixel(iteratorPosX, iteratorPosY).r == 0)
             {
-                Debug.Log($"x: {iteratorPosX}, y: {iteratorPosY}, is black");
+                UnityEngine.Debug.Log($"x: {iteratorPosX}, y: {iteratorPosY}, is black");
                 return false;
             }
 
@@ -215,5 +369,43 @@ public class GameManager : MonoBehaviour
     static int GetDistanceSqrButVectors(Vector2 _a, Vector2 _b)
     {
         return (int)((_a.x - _b.x) * (_a.x - _b.x) + (_a.y - _b.y) * (_a.y - _b.y));
+    }
+
+    static bool CompareLists<T>(List<T> _a, List<T> _b)
+    {
+        if (_a == null || _b == null || _a.Count != _b.Count)
+            return false;
+
+        if (_a.Count == 0)
+            return true;
+
+        Dictionary<T, int> lookUp = new Dictionary<T, int>();
+
+        // create index for the first list
+        for (int i = 0; i < _a.Count; i++)
+        {
+            if (!lookUp.TryGetValue(_a[i], out int count))
+            {
+                lookUp.Add(_a[i], 1);
+                continue;
+            }
+            lookUp[_a[i]] = count + 1;
+        }
+
+        for (int i = 0; i < _b.Count; i++)
+        {
+            if (!lookUp.TryGetValue(_b[i], out int count))
+            {
+                // early exit as the current value in B doesn't exist in the lookUp (and not in ListA)
+                return false;
+            }
+            count--;
+            if (count <= 0)
+                lookUp.Remove(_b[i]);
+            else
+                lookUp[_b[i]] = count;
+        }
+        // if there are remaining elements in the lookUp, that means ListA contains elements that do not exist in ListB
+        return lookUp.Count == 0;
     }
 }

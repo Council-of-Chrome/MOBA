@@ -30,7 +30,9 @@ public struct TeamMask
     }
     public TeamMask Flip()
     {
-        mask = (byte)(~mask);
+        byte maskXOR = 0b_111;
+        byte newMask = (byte)(maskXOR ^ mask);
+        mask = newMask;
         return this;
     }
 
