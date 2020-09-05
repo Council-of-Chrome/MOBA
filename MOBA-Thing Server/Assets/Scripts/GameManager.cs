@@ -5,6 +5,9 @@ using UnityEngine;
 [RequireComponent(typeof(GameClock))]
 public class GameManager : MonoBehaviour
 {
+    public static List<int> InVisionBlue = new List<int>();
+    public static List<int> InVisionRed = new List<int>();
+
     public Texture2D VisionMap;
 
     public ChampionData test1; //modify this between champion and minion data for testing
@@ -93,13 +96,8 @@ public class GameManager : MonoBehaviour
 
     private void Start() //uncomment to test stuff
     {
-        Vector3 spawnpos1 = (new Vector3(119f, 0, 203) / 256) * 80;
-        spawnpos1.x -= 40f;
-        spawnpos1.z -= 40f;
-
-        Vector3 spawnpos2 = (new Vector3(123f, 0, 156f) / 256) * 80;
-        spawnpos2.x -= 40f;
-        spawnpos2.z -= 40f;
+        Vector3 spawnpos1 = TranslateToWorldCoords(new Vector2(119f, 203f));
+        Vector3 spawnpos2 = TranslateToWorldCoords(new Vector2(123f, 156f));
 
         int idc1 = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Blue, spawnpos1).EntityID; //use this for spawning and other move commands
         int idc2 = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Red, spawnpos2).EntityID; //use this for spawning and other move commands
@@ -118,12 +116,11 @@ public class GameManager : MonoBehaviour
 
     private void FixedUpdate()
     {
+        //TODO: only update the vision pass if some entity has declared it is going to move, should
+        //reduce weight
         DoVisionPass(Team_Type.Blue, ref VisionMap);
         DoVisionPass(Team_Type.Red, ref VisionMap);
     }
-
-    static List<int> inVisionBlue = new List<int>();
-    static List<int> inVisionRed = new List<int>();
 
     private static void DoVisionPass(Team_Type _team, ref Texture2D _visionMap)
     {
@@ -192,38 +189,33 @@ public class GameManager : MonoBehaviour
 
             foreach (IEntityTargetable target in targets)
             {
-                Vector3 allyPos = ally.GetPosition(); //position isnt in texture space
-                Vector2 allyPosFloored = new Vector2(allyPos.x + 40f, allyPos.z + 40f); // +40 moves 0,0 to bottom left corner || pos +40 /80 == normalized 0,0 bot left 1,1 top right 256 * normalized.floor() pos on vision map
-                allyPosFloored /= 80f;
-                allyPosFloored *= 256f; //<-- should be in correctly mapped unit space now
-
-                Vector3 targetPos = target.GetPosition();
-                Vector2 targetPosFloored = new Vector2(targetPos.x + 40f, targetPos.z + 40f);
-                targetPosFloored /= 80f;
-                targetPosFloored *= 256f;
+                Vector2 allyPosVMap = TranslateToVisionMapCoords(ally.GetPosition());
+                Vector2 targetPosVMap = TranslateToVisionMapCoords(target.GetPosition());
 
                 //Debug.Log($"ally x: {allyPosFloored.x}, ally y: {allyPosFloored.y} || target x: {targetPosFloored.x}, target y: {targetPosFloored.y}");
-                //Debug.DrawLine(allyPosFloored, targetPosFloored, Color.blue, .1f);
-                if (IsInRangeOnVisionMap(allyPosFloored, targetPosFloored, ref _visionMap, (ally as IGrantVision).CurrentVisionRadius))
+                //Debug.DrawLine(allyPosFloored, targetPosFloored, Color.blue, .1f); <-- kinda just looks cool
+                if (IsInRangeOnVisionMap(allyPosVMap, targetPosVMap, ref _visionMap, (ally as IGrantVision).CurrentVisionRadius))
                     targetsInVision.Add(target.EntityID);
             }
-            //Debug.Log($"{targetsInVision.Count}");
         }
 
         //get previous frame's array for desired team colour and check entities that are new to or no longer in the new list,
         //use this to then ping specified team's player's about modifying visibility client-side
 
+        IEnumerable<int> leftVision;
+        IEnumerable<int> enteredVision;
+
         switch (_team)
         {
-            case Team_Type.Blue: //should prolly just test if new vision list and last frame are the same for reduced calcs
+            case Team_Type.Blue:
             {
-                if (CompareLists(inVisionBlue, targetsInVision))
+                if (CompareLists(InVisionBlue, targetsInVision))
                     return;
 
-                IEnumerable<int> leftVision = inVisionBlue.Where(x => !targetsInVision.Contains(x));
-                IEnumerable<int> enteredVision = targetsInVision.Where(x => !inVisionBlue.Contains(x));
-                //tell blue clients who entered and left
+                leftVision = InVisionBlue.Where(x => !targetsInVision.Contains(x));
+                enteredVision = targetsInVision.Where(x => !InVisionBlue.Contains(x));
 
+                //tell blue clients who entered and left
                 foreach (int id in leftVision)
                 {
                     (GetEntity(id) as IManageNavAgent).Agent.transform.GetChild(1).GetComponent<MeshRenderer>().material.color = Color.red;
@@ -233,18 +225,18 @@ public class GameManager : MonoBehaviour
                     (GetEntity(id) as IManageNavAgent).Agent.transform.GetChild(1).GetComponent<MeshRenderer>().material.color = Color.yellow;
                 }
 
-                inVisionBlue = targetsInVision;
+                InVisionBlue = targetsInVision;
                 break;
             }
             case Team_Type.Red:
             {
-                if (CompareLists(inVisionRed, targetsInVision))
+                if (CompareLists(InVisionRed, targetsInVision))
                     return;
 
-                IEnumerable<int> leftVision = inVisionRed.Where(x => !targetsInVision.Contains(x));
-                IEnumerable<int> enteredVision = targetsInVision.Where(x => !inVisionRed.Contains(x));
-                //tell red clients who entered and left
+                leftVision = InVisionRed.Where(x => !targetsInVision.Contains(x));
+                enteredVision = targetsInVision.Where(x => !InVisionRed.Contains(x));
 
+                //tell red clients who entered and left
                 foreach (int id in leftVision)
                 {
                     (GetEntity(id) as IManageNavAgent).Agent.transform.GetChild(1).GetComponent<MeshRenderer>().material.color = Color.blue;
@@ -254,56 +246,16 @@ public class GameManager : MonoBehaviour
                     (GetEntity(id) as IManageNavAgent).Agent.transform.GetChild(1).GetComponent<MeshRenderer>().material.color = Color.cyan;
                 }
 
-                inVisionRed = targetsInVision;
+                InVisionRed = targetsInVision;
                 break;
             }
         }
-
-        //if (_mask.Allows(Team_Type.Blue)) //is currently allowing blue on both passes, shouldn't be happening
-        //{
-        //    Debug.Log("Blues turn");
-        //    IEnumerable<int> leftVision = inVisionBlue.Where(x => !targetsInVision.Contains(x));
-        //    IEnumerable<int> enteredVision = targetsInVision.Where(x => !inVisionBlue.Contains(x));
-        //    //tell blue clients who entered and left
-
-        //    foreach (int id in leftVision)
-        //    {
-        //        (GetEntity(id) as IManageNavAgent).Agent.transform.GetChild(1).GetComponent<MeshRenderer>().material.color = Color.red;
-        //    }
-        //    foreach (int id in enteredVision)
-        //    {
-        //        (GetEntity(id) as IManageNavAgent).Agent.transform.GetChild(1).GetComponent<MeshRenderer>().material.color = Color.green;
-        //    }
-
-        //    inVisionBlue = targetsInVision;
-        //}
-        //else
-        //{
-        //    Debug.Log("Reds turn");
-        //    IEnumerable<int> leftVision = inVisionRed.Where(x => !targetsInVision.Contains(x));
-        //    IEnumerable<int> enteredVision = targetsInVision.Where(x => !inVisionRed.Contains(x));
-        //    //tell red clients who entered and left
-
-        //    foreach (int id in leftVision)
-        //    {
-        //        (GetEntity(id) as IManageNavAgent).Agent.transform.GetChild(1).GetComponent<MeshRenderer>().material.color = Color.blue;
-        //    }
-        //    foreach (int id in enteredVision)
-        //    {
-        //        (GetEntity(id) as IManageNavAgent).Agent.transform.GetChild(1).GetComponent<MeshRenderer>().material.color = Color.yellow;
-        //    }
-
-        //    inVisionRed = targetsInVision;
-        //}
     }
 
     static bool IsInRangeOnVisionMap(Vector2 _a, Vector2 _b, ref Texture2D _visionMap, int MaxVisionRadius)
     {
-        if (GetDistanceSqrButVectors(_a, _b) > (MaxVisionRadius * MaxVisionRadius) * 2)
-        {
-            //Debug.Log(GetDistanceSqrButVectors(_a, _b));
+        if (GetDistanceSqr(_a, _b) > (MaxVisionRadius * MaxVisionRadius) * 2)
             return false;
-        }
 
         int w = (int)(_b.x - _a.x);
         int h = (int)(_b.y - _a.y);
@@ -334,11 +286,10 @@ public class GameManager : MonoBehaviour
 
         for (int i = 0; i <= longest; i++)
         {
-            //putpixel(x, y, color); <-- read texture 2d from here
             //TODO: add bush registration somehow
             if (_visionMap.GetPixel(iteratorPosX, iteratorPosY).r == 0)
             {
-                Debug.Log($"x: {iteratorPosX}, y: {iteratorPosY}, is black");
+                //Debug.Log($"x: {iteratorPosX}, y: {iteratorPosY}, is black");
                 return false;
             }
 
@@ -359,7 +310,7 @@ public class GameManager : MonoBehaviour
         //Debug.DrawLine((new Vector3(_a.x, 0f, _a.y) /256) * 80, (new Vector3(iteratorPosX, 0f, iteratorPosY) / 256) * 80, Color.green, .1f);
         return true;
     }
-    static int GetDistanceSqrButVectors(Vector2 _a, Vector2 _b)
+    static int GetDistanceSqr(Vector2 _a, Vector2 _b)
     {
         return (int)((_a.x - _b.x) * (_a.x - _b.x) + (_a.y - _b.y) * (_a.y - _b.y));
     }
@@ -400,5 +351,18 @@ public class GameManager : MonoBehaviour
         }
         // if there are remaining elements in the lookUp, that means ListA contains elements that do not exist in ListB
         return lookUp.Count == 0;
+    }
+
+    static Vector2 TranslateToVisionMapCoords(Vector3 _worldPos)
+    {
+        return (new Vector3(_worldPos.x + 40f, _worldPos.z + 40f) / 80) * 256;
+    }
+    static  Vector3 TranslateToWorldCoords(Vector2 _vMapPos)
+    {
+        Vector3 final = (new Vector3(_vMapPos.x, 0f, _vMapPos.y) / 256) * 80;
+        final.x -= 40f;
+        final.z -= 40f;
+
+        return final;
     }
 }
