@@ -11,6 +11,9 @@ public class HealthManager
     private int EntityID { get; }
     private float ResourcePerLvl { get; }
 
+    public delegate void HealthModifiedHandler(int _entityID, float _newHP, float _newShield);
+    public static HealthModifiedHandler OnHealthModified;
+
     public HealthManager(int _entityID, float _baseHP, float _hpPerLvl, float _baseShield = 0f) 
     {
         EntityID = _entityID;
@@ -59,12 +62,14 @@ public class HealthManager
         if(Mathf.Sign(diff) == 1 && !_info.IgnoreShield)
         {
             Shield = diff;
+            OnHealthModified?.Invoke(EntityID, Current, Shield);
             Debug.Log($"ID damaged: {EntityID}, Damage dealer: {_info.CallerID}\nCurrent: {Current}, Shield: {Shield}");
             return;
         }
 
         Shield = 0f;
         Current = toModify;
+        OnHealthModified?.Invoke(EntityID, Current, Shield);
         Debug.Log($"ID damaged: {EntityID}, Damage dealer: {_info.CallerID}\nCurrent: {Current}, Shield: {Shield}");
     }
 
