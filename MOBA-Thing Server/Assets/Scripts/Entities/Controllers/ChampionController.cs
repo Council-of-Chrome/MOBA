@@ -18,6 +18,7 @@ public class ChampionController : MonoBehaviour, IEntityTargetable, IManageHealt
     public ConditionManager Conditions { get; private set; }
     public CrowdControlManager CrowdControl { get; private set; }
     public ExperienceManager Experience { get; private set; }
+
     public NavMeshAgent Agent { get; private set; }
 
     private CapsuleCollider hitbox;

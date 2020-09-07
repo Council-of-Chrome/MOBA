@@ -100,7 +100,7 @@ public class GameManager : MonoBehaviour
         Vector3 spawnpos2 = TranslateToWorldCoords(new Vector2(123f, 156f));
 
         int idc1 = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Blue, spawnpos1).EntityID; //use this for spawning and other move commands
-        int idc2 = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Red, spawnpos2).EntityID; //use this for spawning and other move commands
+        int idc2 = EntityFactory.Instance.SpawnMinion(test2, Team_Type.Red, spawnpos2).EntityID; //use this for spawning and other move commands
 
         //int idm = EntityFactory.Instance.SpawnMinion(test2, Team_Type.Red, Vector3.forward * 3).EntityID;
 
@@ -218,10 +218,12 @@ public class GameManager : MonoBehaviour
                 //tell blue clients who entered and left
                 foreach (int id in leftVision)
                 {
+                    //dont need to do getEntity here
                     (GetEntity(id) as IManageNavAgent).Agent.transform.GetChild(1).GetComponent<MeshRenderer>().material.color = Color.red;
                 }
                 foreach (int id in enteredVision)
                 {
+                    //dont need to do getEntity here
                     (GetEntity(id) as IManageNavAgent).Agent.transform.GetChild(1).GetComponent<MeshRenderer>().material.color = Color.yellow;
                 }
 
@@ -319,9 +321,7 @@ public class GameManager : MonoBehaviour
                 iteratorPosY += dy2;
             }
         }
-
-        //this point comparison is legal, target is within vision of the other.
-        return true;
+        return true; //this point comparison is legal, target is within vision of the other.
     }
     static int GetDistanceSqr(Vector2 _a, Vector2 _b)
     {
