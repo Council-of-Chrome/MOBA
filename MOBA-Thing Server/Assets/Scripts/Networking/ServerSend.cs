@@ -18,20 +18,20 @@ public static class ServerSend
 
     }
 
-    public static void WritePacket<T>(Client_Packet_IDs _packetID, params object[] _params) where T : struct
-    {
-        using (NetworkPacket _packet = new NetworkPacket(_packetID))
-        {
+    //public static void WritePacket<T>(Client_Packet_IDs _packetID, params object[] _params) where T : struct
+    //{
+    //    using (NetworkPacket _packet = new NetworkPacket(_packetID))
+    //    {
 
-        }
-    }
+    //    }
+    //}
 }
 
 public static class SendData
 {
     public static void TCPToClient(int _clientID, NetworkPacket _packet)
     {
-        __packet.WriteLength();
+        _packet.WriteLength();
         ServerBody.Clients[_clientID].SendDataByTCP(_packet);
     }
     public static void TCPToAll(NetworkPacket _packet)

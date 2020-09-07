@@ -77,7 +77,7 @@ public class NetworkClient
 
             netStream.BeginRead(dataBuffer, 0, DATA_BUFFER_SIZE, ReceiveCallback, null);
 
-            ServerSend.Welcome(id, "yeet son");
+            //ServerSend.Welcome(id, "yeet son");
         }
 
         public void SendData(NetworkPacket _packet)
@@ -136,7 +136,7 @@ public class NetworkClient
 
                 ThreadManager.ExecuteOnMain(() =>
                 {
-                    using (Packet _packet = new Packet(packetBytes))
+                    using (NetworkPacket _packet = new NetworkPacket(packetBytes))
                     {
                         int packetID = _packet.ReadInt();
                         //ServerBody.packetHandlers[packetID](id, _packet); <-- this bit is no bueno
@@ -187,17 +187,17 @@ public class NetworkClient
             ServerBody.SendUDP(EndPoint, _packet);
         }
 
-        public void HandleData(NetworkPacket _packet)
+        public void HandleData(NetworkPacket _dataPacket)
         {
-            int packetLength = _packet.ReadInt();
-            byte[] packetBytes = _packet.ReadBytes(packetLength);
+            int packetLength = _dataPacket.ReadInt();
+            byte[] packetBytes = _dataPacket.ReadBytes(packetLength);
 
             ThreadManager.ExecuteOnMain(() =>
             {
-                using (Packet _packet = new Packet(packetBytes))
+                using (NetworkPacket _packet = new NetworkPacket(packetBytes))
                 {
                     int packetID = _packet.ReadInt();
-                    ServerBody.packetHandlers[packetID](id, _packet); //<-- also no bueno
+                    //ServerBody.packetHandlers[packetID](id, _packet); //<-- also no bueno
                 }
             });
         }

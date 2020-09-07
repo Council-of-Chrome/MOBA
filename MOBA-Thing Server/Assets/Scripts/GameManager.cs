@@ -284,13 +284,26 @@ public class GameManager : MonoBehaviour
         int iteratorPosX = (int)_a.x;
         int iteratorPosY = (int)_a.y;
 
+        float startPixelCol = _visionMap.GetPixel(iteratorPosX, iteratorPosY).r; //r is 0-1 scale
+        bool prevPixelIsBush = startPixelCol != 0f && startPixelCol != 1f;
+
         for (int i = 0; i <= longest; i++)
         {
-            //TODO: add bush registration somehow
-            if (_visionMap.GetPixel(iteratorPosX, iteratorPosY).r == 0)
-            {
-                //Debug.Log($"x: {iteratorPosX}, y: {iteratorPosY}, is black");
+            float pixelCol = _visionMap.GetPixel(iteratorPosX, iteratorPosY).r; //r is 0-1 scale
+
+            if (pixelCol == 0f) //is wall
                 return false;
+
+            if (pixelCol != 0f && pixelCol != 1f) //is bush
+            {
+                if (!prevPixelIsBush) //treat bush like a wall 
+                    return false;
+
+                prevPixelIsBush = true;
+            }
+            else
+            {
+                prevPixelIsBush = false;
             }
 
             numerator += shortest;
@@ -306,8 +319,8 @@ public class GameManager : MonoBehaviour
                 iteratorPosY += dy2;
             }
         }
+
         //this point comparison is legal, target is within vision of the other.
-        //Debug.DrawLine((new Vector3(_a.x, 0f, _a.y) /256) * 80, (new Vector3(iteratorPosX, 0f, iteratorPosY) / 256) * 80, Color.green, .1f);
         return true;
     }
     static int GetDistanceSqr(Vector2 _a, Vector2 _b)
