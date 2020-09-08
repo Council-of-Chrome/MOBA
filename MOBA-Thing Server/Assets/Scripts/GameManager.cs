@@ -97,18 +97,18 @@ public class GameManager : MonoBehaviour
     private void Start() //uncomment to test stuff
     {
         Vector3 spawnpos1 = TranslateToWorldCoords(new Vector2(119f, 203f));
-        Vector3 spawnpos2 = TranslateToWorldCoords(new Vector2(123f, 156f));
+        Vector3 spawnpos2 = TranslateToWorldCoords(new Vector2(119f, 200f));
 
         int idc1 = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Blue, spawnpos1).EntityID; //use this for spawning and other move commands
-        int idc2 = EntityFactory.Instance.SpawnMinion(test2, Team_Type.Red, spawnpos2).EntityID; //use this for spawning and other move commands
+        int idc2 = EntityFactory.Instance.SpawnChampion(test1, Team_Type.Red, spawnpos2).EntityID; //use this for spawning and other move commands
 
         //int idm = EntityFactory.Instance.SpawnMinion(test2, Team_Type.Red, Vector3.forward * 3).EntityID;
 
-        //(entities[Team_Type.Blue][idc] as IManageEXP).Levelup(1); //champion requires a level to use abilities
+        (entities[Team_Type.Blue][idc1] as IManageEXP).Levelup(1); //champion requires a level to use abilities
 
-        //AbilityManager test = (entities[Team_Type.Blue][idc] as IManageAbilities).Abilities;
-        //test.RankupAbility(1, 0); //same goes for ability rank
-        //test.Trigger(0, new Ray(new Vector3(0f, 3f, 3f), Vector3.down));
+        AbilityManager test = (entities[Team_Type.Blue][idc1] as IManageAbilities).Abilities;
+        test.RankupAbility(1, 0); //same goes for ability rank
+        test.Trigger(0, new Ray(new Vector3(0f, 3f, 3f), Vector3.down));
 
         //(entities[Team_Type.Blue][idc] as IManageNavAgent).MoveTo(new Vector3(-40f, 0f, -40f));
 

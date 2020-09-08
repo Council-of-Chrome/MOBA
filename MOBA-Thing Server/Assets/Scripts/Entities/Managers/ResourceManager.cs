@@ -13,12 +13,13 @@ public class ResourceManager
 
     private int EntityID { get; }
     private float ResourcePerLvl { get; }
+    private float Base { get; }
 
     public ResourceManager(int _entityID, float _baseResource, float _ResourcePerLvl)
     {
         EntityID = _entityID;
 
-        Current = Max = _baseResource;
+        Current = Max = Base = _baseResource;
         ResourcePerLvl = _ResourcePerLvl;
     }
 
@@ -54,7 +55,8 @@ public class ResourceManager
 
     public virtual void Levelup(int _level)
     {
-        Max = ResourcePerLvl * _level;
+        Max = Base + (ResourcePerLvl * (_level - 1));
+        Current += ResourcePerLvl;
     }
 
     /// <summary>Gets percentage of max resource</summary>

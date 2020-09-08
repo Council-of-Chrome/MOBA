@@ -46,6 +46,20 @@ public interface IManageCrowdControl
 {
     CrowdControlManager CrowdControl { get; }
 }
+public interface IManageCombatState
+{
+    float PhysicalDamageTaken { get; }
+    float MagicalDamageTaken { get; }
+    bool InCombat { get; }
+    Timer CombatTimer { get; }
+    void StartCombat(HPModifiedInfo _info);
+}
+public interface IManageAuras
+{
+    float PhysicalDamageTaken { get; }
+    float MagicalDamageTaken { get; }
+    AuraManager Auras { get; }
+}
 public interface IGrantVision
 {
     int BaseVisionRadius { get; }

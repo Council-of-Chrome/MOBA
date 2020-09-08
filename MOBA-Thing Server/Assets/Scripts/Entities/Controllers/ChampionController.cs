@@ -1,17 +1,24 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 
-public class ChampionController : MonoBehaviour, IEntityTargetable, IManageHealth, IManageResource, IManageAD, IManageEXP, IManageNavAgent, IManageAbilities, IManageConditions, IManageSize, IManageCrowdControl, IGrantVision
+public class ChampionController : MonoBehaviour, IEntityTargetable, IManageHealth, IManageResource, IManageAD, IManageEXP, IManageNavAgent, IManageAbilities, IManageConditions, IManageSize, IManageCrowdControl, IManageCombatState, IGrantVision
 {
     public int EntityID { get; private set; }
 
-    public Entity_Size BaseSize => Entity_Size.Average;
-    public Entity_Size CurrentSize { get { return BaseSize; } }
+    public float PhysicalDamageTaken { get; private set; }
+    public float MagicalDamageTaken { get; private set; }
 
-    public int BaseVisionRadius => 50; //24 seems pretty good, maybe slightly larger
+    public bool InCombat { get; private set; } = false;
+    public Timer CombatTimer { get; private set; }
+
+    public Entity_Size BaseSize => Entity_Size.Average;
+    public Entity_Size CurrentSize { get { return BaseSize; } } //not dynamically updating yet
+
+    public int BaseVisionRadius => 50; //24 seems pretty good, maybe slightly larger, 50 for testing
     public int CurrentVisionRadius { get; private set; } = 50;
 
     public HealthManager Health { get; private set; }
+    public AuraManager Auras { get; private set; }
     public ResourceManager Resource { get; private set; }
     public AttackDamageManager AttackDamage { get; private set; }
     public AbilityManager Abilities { get; private set; }
@@ -27,7 +34,17 @@ public class ChampionController : MonoBehaviour, IEntityTargetable, IManageHealt
     {
         EntityID = _entityID;
 
+        Auras = new AuraManager(EntityID, _data.BaseAura, _data.AuraPerLevel);
+
+        CombatTimer = new Timer(
+            () => { InCombat = true; }, 
+            null, 
+            () => { InCombat = false; Auras.Update(PhysicalDamageTaken, MagicalDamageTaken); }
+            );
+
         Health = new HealthManager(EntityID, _data.BaseHP, _data.HPPerLevel);
+        Health.OnHealthModified += StartCombat;
+
         Resource = new ResourceManager(EntityID, _data.BaseResource, _data.ResourcePerLevel);
         AttackDamage = new AttackDamageManager(EntityID, _data.BaseAttackDamage, _data.AttackPerLevel);
         Abilities = new AbilityManager(EntityID, _data.Abilities);
@@ -60,6 +77,34 @@ public class ChampionController : MonoBehaviour, IEntityTargetable, IManageHealt
         Resource.Levelup(_newLevel);
         AttackDamage.Levelup(_newLevel);
         Abilities.Levelup(_newLevel);
+        Auras.Levelup(_newLevel);
+    }
+
+    public void StartCombat(HPModifiedInfo _info)
+    {
+        if (_info.AttackerID == EntityID) //can't fight urself 4hed
+            return;
+
+        float val = (_info.NewHP - _info.OldHP);
+        if (Mathf.Sign(val) == -1)
+        {
+            switch (_info.DamageType)
+            {
+                case Damage_Type.Magical:
+                    MagicalDamageTaken += Mathf.Abs(val);
+                    break;
+                case Damage_Type.Physical:
+                    PhysicalDamageTaken += Mathf.Abs(val);
+                    break;
+            }
+        }
+
+        if(CombatTimer.Active)
+        {
+            CombatTimer.AbruptReset();
+            return;
+        }
+        CombatTimer.Start(5f); //currently "in combat duration" is just hard coded as 5f
     }
 
     #region Helpers

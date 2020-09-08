@@ -55,9 +55,9 @@ public class AffectHPInfo : EventInfo
     public override int TargetID { get; }
     public int CallerID { get; }
     public bool IgnoreShield { get; }
-    public ResourceEffector Effector { get; }
+    public HealthEffector Effector { get; }
 
-    public AffectHPInfo(int _targetID, int _callerID, bool _ignoreShield, ResourceEffector _effector)
+    public AffectHPInfo(int _targetID, int _callerID, bool _ignoreShield, HealthEffector _effector)
     {
         TargetID = _targetID;
         CallerID = _callerID;

@@ -34,6 +34,12 @@ public interface IUseHealth
     float HPRegenPerLevel { get; }
 }
 
+public interface IResistDamage
+{
+    float BaseAura { get; }
+    float AuraPerLevel { get; }
+}
+
 public interface IAutoAttack
 {
     float BaseAttackDamage { get; }

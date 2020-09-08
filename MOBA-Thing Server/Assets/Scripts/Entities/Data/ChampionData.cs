@@ -2,7 +2,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Champion", menuName = "Entities/Champion")]
-public class ChampionData : ScriptableObject, IHasName, ICanLevel, IMove, IUseHealth, IAutoAttack, IConsumeResource, IUseAbilities
+public class ChampionData : ScriptableObject, IHasName, ICanLevel, IMove, IUseHealth, IResistDamage, IAutoAttack, IConsumeResource, IUseAbilities
 {
     [SerializeField]
     private string displayName = default;
@@ -31,6 +31,13 @@ public class ChampionData : ScriptableObject, IHasName, ICanLevel, IMove, IUseHe
     [SerializeField]
     private float hpRegenPerLevel = default;
     public float HPRegenPerLevel { get { return hpRegenPerLevel; } }
+    [Space]
+    [SerializeField]
+    private float baseAura = default;
+    public float BaseAura { get { return baseAura; } }
+    [SerializeField]
+    private float auraPerLevel = default;
+    public float AuraPerLevel { get { return auraPerLevel; } }
     [Space]
     [SerializeField]
     private float baseAttackDamage = default;

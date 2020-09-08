@@ -6,7 +6,7 @@ public static class ServerSend
 {
     public static void Initialize()
     {
-        HealthManager.OnHealthModified += SendHealthChange;
+        //HealthManager.OnHealthModified += SendHealthChange; <-- dumb idea
     }
     public static void Shutdown()
     {

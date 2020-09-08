@@ -8,6 +8,6 @@ public class AttackDamageManager
 
     public void Levelup(int _newLevel)
     {
-
+        //Max = Base + dmgperlevel * _newLevel - 1;
     }
 }

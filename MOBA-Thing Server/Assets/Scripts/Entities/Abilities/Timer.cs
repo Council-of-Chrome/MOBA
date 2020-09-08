@@ -5,8 +5,10 @@ using UnityEngine;
 
 public class Timer
 {
+    public bool Active { get; private set; }
     public float TotalDuration { get; private set; }
-    public float CurrentTime { get; private set; }
+
+    private float currentTime;
 
     private Action OnStart { get; }
     private Action OnUpdate { get; }
@@ -17,28 +19,35 @@ public class Timer
         TotalDuration = _duration;
         OnStart?.Invoke();
         GameClock.AddEventToUpdate(UpdateTick);
+        Active = true;
     }
 
     private void UpdateTick(float _timeStep)
     {
         OnUpdate?.Invoke();
 
-        CurrentTime += _timeStep;
-        if (CurrentTime >= TotalDuration)
+        currentTime += _timeStep;
+        if (currentTime >= TotalDuration)
             Stop();
     }
 
     public void Stop()
     {
-        CurrentTime = 0f;
+        currentTime = 0f;
         OnEnd?.Invoke();
         GameClock.RemoveEventFromUpdate(UpdateTick);
+        Active = false;
     }
 
-    public void Reset(float _castTime)
+    public void AbruptReset()
+    {
+        currentTime = 0f;
+    }
+
+    public void Reset(float _duration)
     {
         Stop();
-        Start(_castTime);
+        Start(_duration);
     }
 
     public Timer(Action _start = null, Action _update = null, Action _end = null)

@@ -10,25 +10,31 @@ public class HealthManager
 
     private int EntityID { get; }
     private float ResourcePerLvl { get; }
+    private float Base { get; }
 
-    public delegate void HealthModifiedHandler(int _entityID, float _newHP, float _newShield);
-    public static HealthModifiedHandler OnHealthModified;
+    public delegate void HealthModifiedHandler(HPModifiedInfo _info);
+    public HealthModifiedHandler OnHealthModified;
 
     public HealthManager(int _entityID, float _baseHP, float _hpPerLvl, float _baseShield = 0f) 
     {
         EntityID = _entityID;
 
-        Current = Max = _baseHP;
+        Current = Max = Base = _baseHP;
         ResourcePerLvl = _hpPerLvl;
         Shield = _baseShield;
         Invincible = false;
 
         GameEventSystem.Sub<AffectHPInfo>(Modify);
     }
+    ~HealthManager() //safety destructor
+    {
+        GameEventSystem.Unsub<AffectHPInfo>(Modify);
+    }
 
     public void Levelup(int _level)
     {
-        Max = ResourcePerLvl * _level;
+        Max = Base + (ResourcePerLvl * (_level - 1));
+        Current += ResourcePerLvl;
     }
 
     private void Modify(AffectHPInfo _info)
@@ -42,34 +48,64 @@ public class HealthManager
         else
             toModify = Current + Shield;
 
+        float reducedVal = _info.Effector.Value;
+        AuraSplitter splitter = (GameManager.GetEntity(EntityID) as IManageAuras).Auras.Split;
+
         switch (_info.Effector.Type)
         {
+            case Damage_Type.Physical:
+                reducedVal -= splitter.PhysicalAura;
+                break;
+            case Damage_Type.Magical:
+                reducedVal -= splitter.MagicalAura;
+                break;
+        }
+
+        switch (_info.Effector.StatType)
+        {
             case Stat_Effector_Type.Flat:
-                toModify += _info.Effector.Value;
+                toModify += reducedVal;
                 break;
             case Stat_Effector_Type.PMax:
-                toModify += GetPercentMax(_info.Effector.Value);
+                toModify += GetPercentMax(reducedVal);
                 break;
             case Stat_Effector_Type.PMiss:
-                toModify += GetPercentMissing(_info.Effector.Value);
+                toModify += GetPercentMissing(reducedVal);
                 break;
             case Stat_Effector_Type.PCurrent:
-                toModify += Current * _info.Effector.Value;
+                toModify += Current * reducedVal;
                 break;
         }
 
         float diff = toModify - Current;
         if(Mathf.Sign(diff) == 1 && !_info.IgnoreShield)
         {
+            float tmp = Shield;
             Shield = diff;
-            OnHealthModified?.Invoke(EntityID, Current, Shield);
+            OnHealthModified?.Invoke(new HPModifiedInfo(
+                _info.CallerID,
+                Current,
+                Current,
+                _info.Effector.Type,
+                tmp,
+                Shield
+                ));
             Debug.Log($"ID damaged: {EntityID}, Damage dealer: {_info.CallerID}\nCurrent: {Current}, Shield: {Shield}");
             return;
         }
 
+        float tmpShield = Shield;
         Shield = 0f;
+        float tmpHP = Current;
         Current = toModify;
-        OnHealthModified?.Invoke(EntityID, Current, Shield);
+        OnHealthModified?.Invoke(new HPModifiedInfo(
+            _info.CallerID,
+            tmpHP,
+            Current,
+            _info.Effector.Type,
+            tmpShield,
+            Shield
+            ));
         Debug.Log($"ID damaged: {EntityID}, Damage dealer: {_info.CallerID}\nCurrent: {Current}, Shield: {Shield}");
     }
 
@@ -89,3 +125,31 @@ public class HealthManager
         return GetPercentMax((Max - Current) * (1f / Max)) * _percent;
     }
 }
+
+public struct HPModifiedInfo //immutable poggers
+{
+    public int AttackerID { get; }
+
+    public float OldHP { get; }
+    public float NewHP { get; }
+
+    public Damage_Type DamageType { get; }
+
+    public float OldShield { get; }
+    public float NewShield { get; }
+
+    public HPModifiedInfo(int _attackerID, float _oldHP, float _newHP, Damage_Type _damageType, float _oldShield, float _newShield)
+    {
+        AttackerID = _attackerID;
+
+        OldHP = _oldHP;
+        NewHP = _newHP;
+
+        DamageType = _damageType;
+
+        OldShield = _oldShield;
+        NewShield = _newShield;
+    }
+}
+
+
