@@ -17,8 +17,8 @@ public class SampleAbility1 : Ability, IAbilityCastable, ITargetAOE, IAffectHeal
     public float Radius { get { return radius; } }
     public int Angle { get; } = 360;
     [SerializeField]
-    private ResourceEffector[] healthEffectorPerLevel = default;
-    public ResourceEffector[] HealthEffectorPerLevel { get { return healthEffectorPerLevel; } }
+    private HealthEffector[] healthEffectorPerLevel = default;
+    public HealthEffector[] HealthEffectorPerLevel { get { return healthEffectorPerLevel; } }
 
     public void Trigger(int _casterID, Ray _mouseRay, int _abilityRank)
     {

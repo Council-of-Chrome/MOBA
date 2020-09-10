@@ -17,7 +17,7 @@ public struct ResourceEffector
 }
 
 public enum Damage_Type { Physical, Magical, True }
-
+[Serializable]
 public struct HealthEffector
 {
     public float Value;

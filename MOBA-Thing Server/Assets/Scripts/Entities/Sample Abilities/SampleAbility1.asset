@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   radius: 5
   healthEffectorPerLevel:
-  - Value: -10
+  - Value: -50
     Type: 0
+    StatType: 0

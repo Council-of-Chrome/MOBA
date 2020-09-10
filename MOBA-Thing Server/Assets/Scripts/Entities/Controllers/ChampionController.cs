@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 
-public class ChampionController : MonoBehaviour, IEntityTargetable, IManageHealth, IManageResource, IManageAD, IManageEXP, IManageNavAgent, IManageAbilities, IManageConditions, IManageSize, IManageCrowdControl, IManageCombatState, IGrantVision
+public class ChampionController : MonoBehaviour, IEntityTargetable, IManageHealth, IManageResource, IManageAD, IManageEXP, IManageNavAgent, IManageAbilities, IManageConditions, IManageSize, IManageCrowdControl, IManageCombatState, IManageAuras, IGrantVision
 {
     public int EntityID { get; private set; }
 

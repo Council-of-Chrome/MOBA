@@ -25,7 +25,7 @@ public interface ITargetVector
 
 public interface IAffectHealth
 {
-    ResourceEffector[] HealthEffectorPerLevel { get; }
+    HealthEffector[] HealthEffectorPerLevel { get; }
 }
 public interface IAffectResource
 {

@@ -16,6 +16,7 @@ public class AuraManager
         EntityID = _entityID;
         TotalAura = Base = _baseAura;
         AuraPerLevel = _auraPerLevel;
+        Split = new AuraSplitter(_baseAura / 2f, _baseAura / 2f);
     }
 
     public void Levelup(int _newLevel)
@@ -28,9 +29,10 @@ public class AuraManager
         float total = _physical + _magical;
 
         float physPercent = _physical / total;
-        float magiPercent = 1 - physPercent;
+        float magiPercent = 1f - physPercent;
 
-        Split = new AuraSplitter(physPercent, magiPercent);
+        Split = new AuraSplitter(physPercent * TotalAura, magiPercent * TotalAura);
+        Debug.Log($"P:{Split.PhysicalAura}, M:{Split.MagicalAura}");
     }
 }
 

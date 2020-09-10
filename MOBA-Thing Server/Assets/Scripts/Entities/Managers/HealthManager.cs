@@ -54,10 +54,10 @@ public class HealthManager
         switch (_info.Effector.Type)
         {
             case Damage_Type.Physical:
-                reducedVal -= splitter.PhysicalAura;
+                reducedVal *= 100f / (100f - splitter.PhysicalAura);
                 break;
             case Damage_Type.Magical:
-                reducedVal -= splitter.MagicalAura;
+                reducedVal *= 100f / (100f - splitter.MagicalAura);
                 break;
         }
 
