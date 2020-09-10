@@ -36,8 +36,11 @@ public interface IUseHealth
 
 public interface IResistDamage
 {
-    float BaseAura { get; }
-    float AuraPerLevel { get; }
+    float BaseCoreAura { get; }
+    float BaseDynamicAura { get; }
+
+    float CoreAuraPerLevel { get; }
+    float DynamicAuraPerLevel { get; }
 }
 
 public interface IAutoAttack

@@ -19,6 +19,10 @@ MonoBehaviour:
   hpPerLevel: 84
   baseHPRegen: 6.5
   hpRegenPerLevel: 0.6
+  baseCoreAura: 10
+  baseDynamicAura: 10
+  coreAuraPerLevel: 5
+  dynamicAuraPerLevel: 5
   baseAttackDamage: 60
   attackPerLevel: 5
   baseAttackSpeed: 0.625

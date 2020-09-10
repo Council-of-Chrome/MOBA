@@ -34,7 +34,13 @@ public class ChampionController : MonoBehaviour, IEntityTargetable, IManageHealt
     {
         EntityID = _entityID;
 
-        Auras = new AuraManager(EntityID, _data.BaseAura, _data.AuraPerLevel);
+        Auras = new AuraManager(
+            EntityID, 
+            _data.BaseCoreAura, 
+            _data.BaseDynamicAura,
+            _data.CoreAuraPerLevel,
+            _data.DynamicAuraPerLevel
+            );
 
         CombatTimer = new Timer(
             () => { InCombat = true; }, 

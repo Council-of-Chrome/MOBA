@@ -33,11 +33,17 @@ public class ChampionData : ScriptableObject, IHasName, ICanLevel, IMove, IUseHe
     public float HPRegenPerLevel { get { return hpRegenPerLevel; } }
     [Space]
     [SerializeField]
-    private float baseAura = default;
-    public float BaseAura { get { return baseAura; } }
+    private float baseCoreAura = default;
+    public float BaseCoreAura { get { return baseCoreAura; } }
     [SerializeField]
-    private float auraPerLevel = default;
-    public float AuraPerLevel { get { return auraPerLevel; } }
+    private float baseDynamicAura = default;
+    public float BaseDynamicAura { get { return baseDynamicAura; } }
+    [SerializeField]
+    private float coreAuraPerLevel = default;
+    public float CoreAuraPerLevel { get { return coreAuraPerLevel; } }
+    [SerializeField]
+    private float dynamicAuraPerLevel = default;
+    public float DynamicAuraPerLevel { get { return dynamicAuraPerLevel; } }
     [Space]
     [SerializeField]
     private float baseAttackDamage = default;
